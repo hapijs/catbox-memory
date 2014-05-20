@@ -54,7 +54,7 @@ describe('Memory', function () {
         });
     });
 
-    it('gets an item after settig it', function (done) {
+    it('gets an item after setting it', function (done) {
 
         var client = new Catbox.Client(Memory);
         client.start(function (err) {
@@ -68,6 +68,35 @@ describe('Memory', function () {
                     expect(err).to.equal(null);
                     expect(result.item).to.equal('123');
                     done();
+                });
+            });
+        });
+    });
+
+    it('gets an item after setting it (no memory limit)', function (done) {
+
+        var client = new Catbox.Client(new Memory({ maxByteSize: 0 }));
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+            client.set(key, '123', 500, function (err) {
+
+                expect(err).to.not.exist;
+                client.get(key, function (err, result) {
+
+                    expect(err).to.equal(null);
+                    expect(result.item).to.equal('123');
+
+                    client.set(key, '345', 500, function (err) {
+
+                        expect(err).to.not.exist;
+                        client.get(key, function (err, result) {
+
+                            expect(err).to.equal(null);
+                            expect(result.item).to.equal('345');
+                            done();
+                        });
+                    });
                 });
             });
         });
@@ -176,7 +205,7 @@ describe('Memory', function () {
         });
     });
 
-    it('returns error on set when using null key', function (done) {
+    it('errors on set when using null key', function (done) {
 
         var client = new Catbox.Client(Memory);
         client.start(function (err) {
@@ -189,7 +218,7 @@ describe('Memory', function () {
         });
     });
 
-    it('returns error on get when using invalid key', function (done) {
+    it('errors on get when using invalid key', function (done) {
 
         var client = new Catbox.Client(Memory);
         client.start(function (err) {
@@ -202,20 +231,7 @@ describe('Memory', function () {
         });
     });
 
-    it('returns error on drop when using invalid key', function (done) {
-
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
-
-            client.drop({}, function (err) {
-
-                expect(err instanceof Error).to.equal(true);
-                done();
-            });
-        });
-    });
-
-    it('returns error on set when using invalid key', function (done) {
+    it('errors on set when using invalid key', function (done) {
 
         var client = new Catbox.Client(Memory);
         client.start(function (err) {
@@ -242,20 +258,7 @@ describe('Memory', function () {
         });
     });
 
-    it('returns error on drop when using null key', function (done) {
-
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
-
-            client.drop(null, function (err) {
-
-                expect(err instanceof Error).to.equal(true);
-                done();
-            });
-        });
-    });
-
-    it('returns error on get when stopped', function (done) {
+    it('errors on get when stopped', function (done) {
 
         var client = new Catbox.Client(Memory);
         client.stop();
@@ -268,7 +271,7 @@ describe('Memory', function () {
         });
     });
 
-    it('returns error on set when stopped', function (done) {
+    it('errors on set when stopped', function (done) {
 
         var client = new Catbox.Client(Memory);
         client.stop();
@@ -280,19 +283,7 @@ describe('Memory', function () {
         });
     });
 
-    it('returns error on drop when stopped', function (done) {
-
-        var client = new Catbox.Client(Memory);
-        client.stop();
-        var key = { id: 'x', segment: 'test' };
-        client.connection.drop(key, function (err) {
-
-            expect(err).to.exist;
-            done();
-        });
-    });
-
-    it('returns error on missing segment name', function (done) {
+    it('errors on missing segment name', function (done) {
 
         var config = {
             expiresIn: 50000
@@ -306,7 +297,7 @@ describe('Memory', function () {
         done();
     });
 
-    it('returns error on bad segment name', function (done) {
+    it('errors on bad segment name', function (done) {
 
         var config = {
             expiresIn: 50000
@@ -318,17 +309,6 @@ describe('Memory', function () {
         };
         expect(fn).to.throw(Error);
         done();
-    });
-
-    it('returns error when cache item dropped while stopped', function (done) {
-
-        var client = new Catbox.Client(Memory);
-        client.stop();
-        client.drop('a', function (err) {
-
-            expect(err).to.exist;
-            done();
-        });
     });
 
     describe('#start', function () {
@@ -363,7 +343,7 @@ describe('Memory', function () {
 
     describe('#get', function () {
 
-        it('returns error on invalid json in cache', function (done) {
+        it('errors on invalid json in cache', function (done) {
 
             var key = {
                 segment: 'test',
@@ -460,7 +440,7 @@ describe('Memory', function () {
             });
         });
 
-        it('returns an error when the maxByteSize has been reached', function (done) {
+        it('errors when the maxByteSize has been reached', function (done) {
 
             var key = {
                 segment: 'test',
@@ -482,7 +462,7 @@ describe('Memory', function () {
             });
         });
 
-        it('increments the byte size when an item is inserted and returns an error when the limit is reached', function (done) {
+        it('increments the byte size when an item is inserted and errors when the limit is reached', function (done) {
 
             var key1 = {
                 segment: 'test',
@@ -578,9 +558,121 @@ describe('Memory', function () {
         });
     });
 
+    describe('#drop', function () {
+
+        it('drops an existing item', function (done) {
+
+            var client = new Catbox.Client(Memory);
+            client.start(function (err) {
+
+                var key = { id: 'x', segment: 'test' };
+                client.set(key, '123', 500, function (err) {
+
+                    expect(err).to.not.exist;
+                    client.get(key, function (err, result) {
+
+                        expect(err).to.equal(null);
+                        expect(result.item).to.equal('123');
+                        client.drop(key, function (err) {
+
+                            expect(err).to.not.exist;
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+
+        it('drops an item from a missing segment', function (done) {
+
+            var client = new Catbox.Client(Memory);
+            client.start(function (err) {
+
+                var key = { id: 'x', segment: 'test' };
+                client.drop(key, function (err) {
+
+                    expect(err).to.not.exist;
+                    done();
+                });
+            });
+        });
+
+        it('drops a missing item', function (done) {
+
+            var client = new Catbox.Client(Memory);
+            client.start(function (err) {
+
+                var key = { id: 'x', segment: 'test' };
+                client.set(key, '123', 500, function (err) {
+
+                    expect(err).to.not.exist;
+                    client.get(key, function (err, result) {
+
+                        expect(err).to.equal(null);
+                        expect(result.item).to.equal('123');
+                        client.drop({ id: 'y', segment: 'test' }, function (err) {
+
+                            expect(err).to.not.exist;
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+
+        it('errors on drop when using invalid key', function (done) {
+
+            var client = new Catbox.Client(Memory);
+            client.start(function (err) {
+
+                client.drop({}, function (err) {
+
+                    expect(err instanceof Error).to.equal(true);
+                    done();
+                });
+            });
+        });
+
+        it('errors on drop when using null key', function (done) {
+
+            var client = new Catbox.Client(Memory);
+            client.start(function (err) {
+
+                client.drop(null, function (err) {
+
+                    expect(err instanceof Error).to.equal(true);
+                    done();
+                });
+            });
+        });
+
+        it('errors on drop when stopped', function (done) {
+
+            var client = new Catbox.Client(Memory);
+            client.stop();
+            var key = { id: 'x', segment: 'test' };
+            client.connection.drop(key, function (err) {
+
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+        it('errors when cache item dropped while stopped', function (done) {
+
+            var client = new Catbox.Client(Memory);
+            client.stop();
+            client.drop('a', function (err) {
+
+                expect(err).to.exist;
+                done();
+            });
+        });
+    });
+
     describe('#validateSegmentName', function () {
 
-        it('returns an error when the name is empty', function (done) {
+        it('errors when the name is empty', function (done) {
 
             var memory = new Memory();
             var result = memory.validateSegmentName('');
@@ -590,7 +682,7 @@ describe('Memory', function () {
             done();
         });
 
-        it('returns an error when the name has a null character', function (done) {
+        it('errors when the name has a null character', function (done) {
 
             var memory = new Memory();
             var result = memory.validateSegmentName('\0test');

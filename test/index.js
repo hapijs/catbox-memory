@@ -73,6 +73,42 @@ describe('Memory', function () {
         });
     });
 
+    it('gets a buffer item after setting it', function (done) {
+
+        var buffer = new Buffer("I'm a string!", "utf-8");
+
+        var client = new Catbox.Client(new Memory({buffer: true}));
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+            client.set(key, buffer, 500, function (err) {
+
+                expect(err).to.not.exist;
+                client.get(key, function (err, result) {
+
+                    expect(err).to.equal(null);
+                    expect(result.item).to.equal(buffer);
+                    done();
+                });
+            });
+        });
+    });
+
+
+    it('fails setting a non buffer when expecting a buffer', function (done) {
+
+        var client = new Catbox.Client(new Memory({buffer: true}));
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+            client.set(key, "I'm a string!", 500, function (err) {
+                expect(err.message).to.equal('Value is not a Buffer');
+                done();
+            });
+        });
+    });
+
+
     it('gets an item after setting it (no memory limit)', function (done) {
 
         var client = new Catbox.Client(new Memory({ maxByteSize: 0 }));

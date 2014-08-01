@@ -3,6 +3,10 @@ catbox-memory
 
 Memory adapter for catbox
 
+| Lead Maintainer  |
+|:-:|
+|[hueniverse](https://github.com/hueniverse)|
+|![hueniverse](https://secure.gravatar.com/avatar/28d0cb94cd9afcc9763dd64fea80a187?s=128)|
 
 ### Options
 

@@ -1,7 +1,7 @@
 {
   "name": "catbox-memory",
   "description": "Memory adapter for catbox",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": "Eran Hammer <eran@hammer.io> (http://hueniverse.com)",
   "contributors": [
     "Wyatt Preul <wpreul@gmail.com> (http://jsgeek.com)"
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "catbox": "3.x.x",
-    "lab": "3.x.x"
+    "lab": "4.x.x"
   },
   "scripts": {
     "test": "make test-cov"

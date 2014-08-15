@@ -474,7 +474,9 @@ describe('Memory', function () {
                 id: 'test2'
             };
 
-            var memory = new Memory({ maxByteSize: 161 });
+            // maxByteSize is slightly larger than the first key so we are left with a small
+            // amount of free space, but not enough for the second key to be created.
+            var memory = new Memory({ maxByteSize: 200 });
             expect(memory.cache).to.not.exist;
 
             memory.start(function () {
@@ -516,6 +518,7 @@ describe('Memory', function () {
                 expect(memory.cache).to.exist;
                 memory.set(key1, itemToStore, 10, function () {
 
+                    expect(memory.byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].item).to.exist;
                     done();

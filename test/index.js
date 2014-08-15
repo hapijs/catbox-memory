@@ -474,14 +474,15 @@ describe('Memory', function () {
                 id: 'test2'
             };
 
-            var memory = new Memory({ maxByteSize: 70 });
+            var memory = new Memory({ maxByteSize: 161 });
             expect(memory.cache).to.not.exist;
 
             memory.start(function () {
 
                 expect(memory.cache).to.exist;
-                memory.set(key1, 'my', 10, function () {
+                memory.set(key1, 'my', 10, function (err) {
 
+                    expect(err).to.not.exist;
                     expect(memory.cache[key1.segment][key1.id].item).to.equal('"my"');
 
                     memory.set(key2, 'myvalue', 10, function (err) {
@@ -515,7 +516,7 @@ describe('Memory', function () {
                 expect(memory.cache).to.exist;
                 memory.set(key1, itemToStore, 10, function () {
 
-                    expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(113);
+                    expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].item).to.exist;
                     done();
                 });
@@ -545,11 +546,11 @@ describe('Memory', function () {
                 expect(memory.cache).to.exist;
                 memory.set(key1, itemToStore, 10, function () {
 
-                    expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(113);
+                    expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].item).to.exist;
                     memory.set(key1, itemToStore, 10, function () {
 
-                        expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(113);
+                        expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                         expect(memory.cache[key1.segment][key1.id].item).to.exist;
                         done();
                     });

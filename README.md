@@ -3,7 +3,7 @@ catbox-memory
 
 Memory adapter for catbox
 
-Lead Maintainer - [Eran Hammer](https://github.com/hueniverse)
+Lead Maintainer - [Colin Ihrig](https://github.com/cjihrig)
 
 ### Options
 

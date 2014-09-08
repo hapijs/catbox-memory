@@ -12,11 +12,12 @@ var internals = {};
 
 // Test shortcuts
 
+var lab = exports.lab = Lab.script();
+var describe = lab.describe;
+var it = lab.it;
+var before = lab.before;
+var after = lab.after;
 var expect = Lab.expect;
-var before = Lab.before;
-var after = Lab.after;
-var describe = Lab.experiment;
-var it = Lab.test;
 
 
 describe('Memory', function () {
@@ -76,8 +77,7 @@ describe('Memory', function () {
     it('gets a buffer item after setting it', function (done) {
 
         var buffer = new Buffer("I'm a string!", "utf-8");
-
-        var client = new Catbox.Client(new Memory({buffer: true}));
+        var client = new Catbox.Client(new Memory());
         client.start(function (err) {
 
             var key = { id: 'x', segment: 'test' };
@@ -90,20 +90,6 @@ describe('Memory', function () {
                     expect(result.item).to.equal(buffer);
                     done();
                 });
-            });
-        });
-    });
-
-
-    it('fails setting a non buffer when expecting a buffer', function (done) {
-
-        var client = new Catbox.Client(new Memory({buffer: true}));
-        client.start(function (err) {
-
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, "I'm a string!", 500, function (err) {
-                expect(err.message).to.equal('Value is not a Buffer');
-                done();
             });
         });
     });
@@ -510,14 +496,17 @@ describe('Memory', function () {
                 id: 'test2'
             };
 
-            var memory = new Memory({ maxByteSize: 70 });
+            // maxByteSize is slightly larger than the first key so we are left with a small
+            // amount of free space, but not enough for the second key to be created.
+            var memory = new Memory({ maxByteSize: 200 });
             expect(memory.cache).to.not.exist;
 
             memory.start(function () {
 
                 expect(memory.cache).to.exist;
-                memory.set(key1, 'my', 10, function () {
+                memory.set(key1, 'my', 10, function (err) {
 
+                    expect(err).to.not.exist;
                     expect(memory.cache[key1.segment][key1.id].item).to.equal('"my"');
 
                     memory.set(key2, 'myvalue', 10, function (err) {
@@ -551,7 +540,8 @@ describe('Memory', function () {
                 expect(memory.cache).to.exist;
                 memory.set(key1, itemToStore, 10, function () {
 
-                    expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(113);
+                    expect(memory.byteSize).to.equal(204);
+                    expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].item).to.exist;
                     done();
                 });
@@ -581,11 +571,11 @@ describe('Memory', function () {
                 expect(memory.cache).to.exist;
                 memory.set(key1, itemToStore, 10, function () {
 
-                    expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(113);
+                    expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].item).to.exist;
                     memory.set(key1, itemToStore, 10, function () {
 
-                        expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(113);
+                        expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                         expect(memory.cache[key1.segment][key1.id].item).to.exist;
                         done();
                     });

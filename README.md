@@ -13,3 +13,4 @@ Current version: **1.0.x** [![Build Status](https://api.travis-ci.org/hapijs/cat
   cached. Once this limit is reached no additional items will be added to the cache
   until some expire. The utilized memory calculation is a rough approximation and must
   not be relied on. Defaults to `104857600` (100MB).
+- `allowMixedContent` - stores and retrieves buffers as Buffer. Buffers are copied before storing to prevent value from changing while in the cache. Defaults to `false`.

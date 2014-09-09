@@ -74,10 +74,51 @@ describe('Memory', function () {
         });
     });
 
-    it('gets a buffer item after setting it', function (done) {
+    it('gets a buffer item after setting it with allowMixedContent', function (done) {
 
         var buffer = new Buffer("I'm a string!", "utf-8");
-        var client = new Catbox.Client(new Memory());
+        var client = new Catbox.Client(new Memory({allowMixedContent: true}));
+
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+            client.set(key, buffer, 500, function (err) {
+
+                expect(err).to.not.exist;
+                client.get(key, function (err, result) {
+                    expect(err).to.equal(null);
+                    expect(result.item).to.deep.equal(buffer);
+                    done();
+                });
+            });
+        });
+    });
+
+    it('stores a copy of the buffer when setting allowMixedContent', function (done) {
+
+        var buffer = new Buffer("I'm a string!", "utf-8");
+        var client = new Catbox.Client(new Memory({allowMixedContent: true}));
+
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+            client.set(key, buffer, 500, function (err) {
+
+                expect(err).to.not.exist;
+                client.get(key, function (err, result) {
+                    expect(err).to.equal(null);
+                    expect(result.item).to.not.equal(buffer);
+                    done();
+                });
+            });
+        });
+    });
+
+
+    it('returns a buffer as JSON when allowMixedContent is not set', function (done) {
+
+        var buffer = new Buffer("I'm a string!", "utf-8");
+        var client = new Catbox.Client(new Memory({}));
         client.start(function (err) {
 
             var key = { id: 'x', segment: 'test' };
@@ -87,7 +128,7 @@ describe('Memory', function () {
                 client.get(key, function (err, result) {
 
                     expect(err).to.equal(null);
-                    expect(result.item).to.equal(buffer);
+                    expect(result.item).to.deep.equal(JSON.parse(JSON.stringify(buffer)));
                     done();
                 });
             });

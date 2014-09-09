@@ -74,6 +74,74 @@ describe('Memory', function () {
         });
     });
 
+    it('buffers can be set and retrieved when allowMixedContent is true', function (done) {
+
+        var buffer = new Buffer('string value');
+        var client = new Catbox.Client(new Memory({ allowMixedContent: true }));
+
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+
+            client.set(key, buffer, 500, function (err) {
+
+                expect(err).to.not.exist;
+                client.get(key, function (err, result) {
+
+                    expect(err).to.not.exist;
+                    expect(result.item instanceof Buffer).to.equal(true);
+                    expect(result.item).to.deep.equal(buffer);
+                    done();
+                });
+            });
+        });
+    });
+
+    it('buffers are copied before storing when allowMixedContent is true', function (done) {
+
+        var buffer = new Buffer('string value');
+        var client = new Catbox.Client(new Memory({ allowMixedContent: true }));
+
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+
+            client.set(key, buffer, 500, function (err) {
+
+                expect(err).to.not.exist;
+                client.get(key, function (err, result) {
+
+                    expect(err).to.not.exist;
+                    expect(result.item).to.not.equal(buffer);
+                    done();
+                });
+            });
+        });
+    });
+
+    it('buffers are stringified when allowMixedContent is not true', function (done) {
+
+        var buffer = new Buffer('string value');
+        var client = new Catbox.Client(new Memory());
+
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+
+            client.set(key, buffer, 500, function (err) {
+
+                expect(err).to.not.exist;
+                client.get(key, function (err, result) {
+
+                    expect(err).to.not.exist;
+                    expect(result.item instanceof Buffer).to.equal(false);
+                    expect(result.item).to.deep.equal(JSON.parse(JSON.stringify(buffer)));
+                    done();
+                });
+            });
+        });
+    });
+
     it('gets an item after setting it (no memory limit)', function (done) {
 
         var client = new Catbox.Client(new Memory({ maxByteSize: 0 }));

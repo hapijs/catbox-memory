@@ -5,7 +5,7 @@ Memory adapter for catbox
 
 Lead Maintainer - [Colin Ihrig](https://github.com/cjihrig)
 
-Current version: **1.1.x** [![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
+Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.svg)](https://www.npmjs.org/package/catbox-memory) [![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
 
 ### Options
 

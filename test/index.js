@@ -187,16 +187,29 @@ describe('Memory', function () {
         });
     });
 
-    it('fails setting an item with very long ttl', function (done) {
+    it('uses setLongTimeout when timeout is too large', function (done) {
 
         var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        var prevInterval = Memory.maxTimeoutInterval;
+        var key = { id: 'x', segment: 'test' };
 
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, '123', Math.pow(2, 31), function (err) {
+        Memory.maxTimeoutInterval = 10;
 
-                expect(err.message).to.equal('Invalid ttl (greater than 2147483647)');
+        var finish = function () {
+            client.get(key, function (err, result) {
+                expect(err).to.not.exist;
+                expect(result).to.not.exist;
+                Memory.maxTimeoutInterval = prevInterval;
                 done();
+            });
+        };
+
+        client.start(function (err) {
+            expect(err).to.not.exist;
+
+            client.set(key, '123', 100, function (err) {
+                expect(err).to.not.exist;
+                setTimeout(finish, 120);
             });
         });
     });

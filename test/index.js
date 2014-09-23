@@ -378,7 +378,7 @@ describe('Memory', function () {
         done();
     });
 
-    describe('#start', function () {
+    describe('start()', function () {
 
         it('creates an empty cache object', function (done) {
 
@@ -392,7 +392,7 @@ describe('Memory', function () {
         });
     });
 
-    describe('#stop', function () {
+    describe('stop()', function () {
 
         it('sets the cache object to null', function (done) {
 
@@ -408,7 +408,7 @@ describe('Memory', function () {
         });
     });
 
-    describe('#get', function () {
+    describe('get()', function () {
 
         it('errors on invalid json in cache', function (done) {
 
@@ -459,7 +459,7 @@ describe('Memory', function () {
         });
     });
 
-    describe('#set', function () {
+    describe('set()', function () {
 
         it('adds an item to the cache object', function (done) {
 
@@ -629,7 +629,7 @@ describe('Memory', function () {
         });
     });
 
-    describe('#drop', function () {
+    describe('drop()', function () {
 
         it('drops an existing item', function (done) {
 
@@ -741,7 +741,7 @@ describe('Memory', function () {
         });
     });
 
-    describe('#validateSegmentName', function () {
+    describe('validateSegmentName()', function () {
 
         it('errors when the name is empty', function (done) {
 

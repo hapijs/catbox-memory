@@ -1,5 +1,6 @@
 // Load modules
 
+var Code = require('code');
 var Lab = require('lab');
 var Catbox = require('catbox');
 var Memory = require('..');
@@ -15,7 +16,7 @@ var internals = {};
 var lab = exports.lab = Lab.script();
 var describe = lab.describe;
 var it = lab.it;
-var expect = Lab.expect;
+var expect = Code.expect;
 
 
 describe('Memory', function () {
@@ -61,7 +62,7 @@ describe('Memory', function () {
             var key = { id: 'x', segment: 'test' };
             client.set(key, '123', 500, function (err) {
 
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 client.get(key, function (err, result) {
 
                     expect(err).to.equal(null);
@@ -83,10 +84,10 @@ describe('Memory', function () {
 
             client.set(key, buffer, 500, function (err) {
 
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 client.get(key, function (err, result) {
 
-                    expect(err).to.not.exist;
+                    expect(err).to.not.exist();
                     expect(result.item instanceof Buffer).to.equal(true);
                     expect(result.item).to.deep.equal(buffer);
                     done();
@@ -106,10 +107,10 @@ describe('Memory', function () {
 
             client.set(key, buffer, 500, function (err) {
 
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 client.get(key, function (err, result) {
 
-                    expect(err).to.not.exist;
+                    expect(err).to.not.exist();
                     expect(result.item).to.not.equal(buffer);
                     done();
                 });
@@ -128,10 +129,10 @@ describe('Memory', function () {
 
             client.set(key, buffer, 500, function (err) {
 
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 client.get(key, function (err, result) {
 
-                    expect(err).to.not.exist;
+                    expect(err).to.not.exist();
                     expect(result.item instanceof Buffer).to.equal(false);
                     expect(result.item).to.deep.equal(JSON.parse(JSON.stringify(buffer)));
                     done();
@@ -148,7 +149,7 @@ describe('Memory', function () {
             var key = { id: 'x', segment: 'test' };
             client.set(key, '123', 500, function (err) {
 
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 client.get(key, function (err, result) {
 
                     expect(err).to.equal(null);
@@ -156,7 +157,7 @@ describe('Memory', function () {
 
                     client.set(key, '345', 500, function (err) {
 
-                        expect(err).to.not.exist;
+                        expect(err).to.not.exist();
                         client.get(key, function (err, result) {
 
                             expect(err).to.equal(null);
@@ -224,12 +225,12 @@ describe('Memory', function () {
         var client = new Catbox.Client(Memory);
         client.start(function (err) {
 
-            expect(err).to.not.exist;
+            expect(err).to.not.exist();
             expect(client.isReady()).to.equal(true);
 
             client.start(function (err) {
 
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 expect(client.isReady()).to.equal(true);
                 done();
             });
@@ -258,7 +259,7 @@ describe('Memory', function () {
             var key = { id: 'x', segment: 'test' };
             client.set(key, 'x', 1, function (err) {
 
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 setTimeout(function () {
 
                     client.get(key, function (err, result) {
@@ -319,7 +320,7 @@ describe('Memory', function () {
             var key = { id: 'x', segment: 'test' };
             client.set(key, 'y', 0, function (err) {
 
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 done();
             });
         });
@@ -332,8 +333,8 @@ describe('Memory', function () {
         var key = { id: 'x', segment: 'test' };
         client.connection.get(key, function (err, result) {
 
-            expect(err).to.exist;
-            expect(result).to.not.exist;
+            expect(err).to.exist();
+            expect(result).to.not.exist();
             done();
         });
     });
@@ -345,7 +346,7 @@ describe('Memory', function () {
         var key = { id: 'x', segment: 'test' };
         client.connection.set(key, 'y', 1, function (err) {
 
-            expect(err).to.exist;
+            expect(err).to.exist();
             done();
         });
     });
@@ -383,10 +384,10 @@ describe('Memory', function () {
         it('creates an empty cache object', function (done) {
 
             var memory = new Memory();
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 done();
             });
         });
@@ -397,12 +398,12 @@ describe('Memory', function () {
         it('sets the cache object to null', function (done) {
 
             var memory = new Memory();
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.stop();
-                expect(memory.cache).to.not.exist;
+                expect(memory.cache).to.not.exist();
                 done();
             });
         });
@@ -418,11 +419,11 @@ describe('Memory', function () {
             };
 
             var memory = new Memory();
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
 
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.set(key, 'myvalue', 10, function () {
 
                     expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
@@ -444,15 +445,15 @@ describe('Memory', function () {
             };
 
             var memory = new Memory();
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
 
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.get(key, function (err, result) {
 
-                    expect(err).to.not.exist;
-                    expect(result).to.not.exist;
+                    expect(err).to.not.exist();
+                    expect(result).to.not.exist();
                     done();
                 });
             });
@@ -469,11 +470,11 @@ describe('Memory', function () {
             };
 
             var memory = new Memory();
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
 
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.set(key, 'myvalue', 10, function () {
 
                     expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
@@ -490,17 +491,17 @@ describe('Memory', function () {
             };
 
             var memory = new Memory();
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
 
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.set(key, 'myvalue', 10, function () {
 
                     expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
                     setTimeout(function () {
 
-                        expect(memory.cache[key.segment][key.id]).to.not.exist;
+                        expect(memory.cache[key.segment][key.id]).to.not.exist();
                         done();
                     }, 15);
                 });
@@ -515,14 +516,14 @@ describe('Memory', function () {
             };
 
             var memory = new Memory({ maxByteSize: 4 });
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
 
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.set(key, 'myvalue', 10, function (err) {
 
-                    expect(err).to.exist;
+                    expect(err).to.exist();
                     expect(err).to.be.instanceOf(Error);
                     done();
                 });
@@ -544,19 +545,19 @@ describe('Memory', function () {
             // maxByteSize is slightly larger than the first key so we are left with a small
             // amount of free space, but not enough for the second key to be created.
             var memory = new Memory({ maxByteSize: 200 });
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
 
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.set(key1, 'my', 10, function (err) {
 
-                    expect(err).to.not.exist;
+                    expect(err).to.not.exist();
                     expect(memory.cache[key1.segment][key1.id].item).to.equal('"my"');
 
                     memory.set(key2, 'myvalue', 10, function (err) {
 
-                        expect(err).to.exist;
+                        expect(err).to.exist();
                         done();
                     });
                 });
@@ -578,16 +579,16 @@ describe('Memory', function () {
             };
 
             var memory = new Memory({ maxByteSize: 2000 });
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
 
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.set(key1, itemToStore, 10, function () {
 
                     expect(memory.byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
-                    expect(memory.cache[key1.segment][key1.id].item).to.exist;
+                    expect(memory.cache[key1.segment][key1.id].item).to.exist();
                     done();
                 });
             });
@@ -609,19 +610,19 @@ describe('Memory', function () {
             };
 
             var memory = new Memory({ maxByteSize: 2000 });
-            expect(memory.cache).to.not.exist;
+            expect(memory.cache).to.not.exist();
 
             memory.start(function () {
 
-                expect(memory.cache).to.exist;
+                expect(memory.cache).to.exist();
                 memory.set(key1, itemToStore, 10, function () {
 
                     expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
-                    expect(memory.cache[key1.segment][key1.id].item).to.exist;
+                    expect(memory.cache[key1.segment][key1.id].item).to.exist();
                     memory.set(key1, itemToStore, 10, function () {
 
                         expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
-                        expect(memory.cache[key1.segment][key1.id].item).to.exist;
+                        expect(memory.cache[key1.segment][key1.id].item).to.exist();
                         done();
                     });
                 });
@@ -639,14 +640,14 @@ describe('Memory', function () {
                 var key = { id: 'x', segment: 'test' };
                 client.set(key, '123', 500, function (err) {
 
-                    expect(err).to.not.exist;
+                    expect(err).to.not.exist();
                     client.get(key, function (err, result) {
 
                         expect(err).to.equal(null);
                         expect(result.item).to.equal('123');
                         client.drop(key, function (err) {
 
-                            expect(err).to.not.exist;
+                            expect(err).to.not.exist();
                             done();
                         });
                     });
@@ -662,7 +663,7 @@ describe('Memory', function () {
                 var key = { id: 'x', segment: 'test' };
                 client.drop(key, function (err) {
 
-                    expect(err).to.not.exist;
+                    expect(err).to.not.exist();
                     done();
                 });
             });
@@ -676,14 +677,14 @@ describe('Memory', function () {
                 var key = { id: 'x', segment: 'test' };
                 client.set(key, '123', 500, function (err) {
 
-                    expect(err).to.not.exist;
+                    expect(err).to.not.exist();
                     client.get(key, function (err, result) {
 
                         expect(err).to.equal(null);
                         expect(result.item).to.equal('123');
                         client.drop({ id: 'y', segment: 'test' }, function (err) {
 
-                            expect(err).to.not.exist;
+                            expect(err).to.not.exist();
                             done();
                         });
                     });
@@ -724,7 +725,7 @@ describe('Memory', function () {
             var key = { id: 'x', segment: 'test' };
             client.connection.drop(key, function (err) {
 
-                expect(err).to.exist;
+                expect(err).to.exist();
                 done();
             });
         });
@@ -735,7 +736,7 @@ describe('Memory', function () {
             client.stop();
             client.drop('a', function (err) {
 
-                expect(err).to.exist;
+                expect(err).to.exist();
                 done();
             });
         });

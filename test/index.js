@@ -373,7 +373,7 @@ describe('Memory', function () {
         var fn = function () {
 
             var client = new Catbox.Client(Memory);
-            var cache = new Catbox.Policy(config, client, 'a\0b');
+            var cache = new Catbox.Policy(config, client, 'a\u0000b');
         };
         expect(fn).to.throw(Error);
         done();
@@ -757,7 +757,7 @@ describe('Memory', function () {
         it('errors when the name has a null character', function (done) {
 
             var memory = new Memory();
-            var result = memory.validateSegmentName('\0test');
+            var result = memory.validateSegmentName('\u0000test');
 
             expect(result).to.be.instanceOf(Error);
             done();

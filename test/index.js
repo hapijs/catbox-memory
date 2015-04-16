@@ -379,6 +379,40 @@ describe('Memory', function () {
         done();
     });
 
+    it('cleans up timers when stopped', { parallel: false }, function (done) {
+
+        var cleared;
+        var set;
+
+        var oldClear = clearTimeout;
+        clearTimeout = function (id) {
+            cleared = id;
+            return oldClear(id);
+        };
+
+        var oldSet = setTimeout;
+        setTimeout = function (fn, time) {
+            set = oldSet(fn, time);
+            return set;
+        };
+
+        var client = new Catbox.Client(Memory);
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+            client.set(key, '123', 500, function (err) {
+
+                client.stop();
+                clearTimeout = oldClear;
+                setTimeout = oldSet;
+                expect(err).to.not.exist();
+                expect(cleared).to.exist();
+                expect(cleared).to.equal(set);
+                done();
+            });
+        });
+    });
+
     describe('start()', function () {
 
         it('creates an empty cache object', function (done) {

@@ -386,12 +386,14 @@ describe('Memory', function () {
 
         var oldClear = clearTimeout;
         clearTimeout = function (id) {
+
             cleared = id;
             return oldClear(id);
         };
 
         var oldSet = setTimeout;
         setTimeout = function (fn, time) {
+
             set = oldSet(fn, time);
             return set;
         };

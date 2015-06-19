@@ -312,6 +312,25 @@ describe('Memory', function () {
         });
     });
 
+    it('empty response when using non-existent key', function (done) {
+
+        var client = new Catbox.Client(Memory);
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+            client.set(key, 'x', 1, function (err) {
+
+                expect(err).to.not.exist();
+                client.get({ id: 'bla', segment: 'test' }, function (err, result) {
+
+                    expect(err).to.be.null();
+                    expect(result).to.be.null();
+                    done();
+                });
+            });
+        });
+    });
+
     it('ignores set when using non-positive ttl value', function (done) {
 
         var client = new Catbox.Client(Memory);
@@ -377,42 +396,6 @@ describe('Memory', function () {
         };
         expect(fn).to.throw(Error);
         done();
-    });
-
-    it('cleans up timers when stopped', { parallel: false }, function (done) {
-
-        var cleared;
-        var set;
-
-        var oldClear = clearTimeout;
-        clearTimeout = function (id) {
-
-            cleared = id;
-            return oldClear(id);
-        };
-
-        var oldSet = setTimeout;
-        setTimeout = function (fn, time) {
-
-            set = oldSet(fn, time);
-            return set;
-        };
-
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
-
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, '123', 500, function (err) {
-
-                client.stop();
-                clearTimeout = oldClear;
-                setTimeout = oldSet;
-                expect(err).to.not.exist();
-                expect(cleared).to.exist();
-                expect(cleared).to.equal(set);
-                done();
-            });
-        });
     });
 
     describe('start()', function () {
@@ -526,7 +509,7 @@ describe('Memory', function () {
                 id: 'test'
             };
 
-            var memory = new Memory();
+            var memory = new Memory({ intervalTime: 5 });
             expect(memory.cache).to.not.exist();
 
             memory.start(function () {
@@ -539,7 +522,7 @@ describe('Memory', function () {
 
                         expect(memory.cache[key.segment][key.id]).to.not.exist();
                         done();
-                    }, 15);
+                    }, 25);
                 });
             });
         });
@@ -808,5 +791,53 @@ describe('Memory', function () {
             expect(result).to.equal(null);
             done();
         });
+    });
+
+    describe('_pruneCache()', function () {
+
+        it('errors when not connected', function (done) {
+
+            var memory = new Memory();
+            memory._pruneCache(function (err) {
+
+                expect(err).to.exist();
+                done();
+            });
+        });
+
+        it('has enough keys to do random check for pruning', function (done) {
+
+            var memory = new Memory({ intervalTime: 5, numberOfKeysToCheck: 10, continueRatio: 0.25 });
+            var cb = function (err) {
+
+                expect(err).to.not.exist();
+            };
+
+            memory.start(function () {
+
+                memory.set({ segment: 'seg1', id: 'nodelete' }, '123', 200, cb);
+                for (var i = 0; i < 20; i++) {
+                    memory.set({ segment: 'seg1', id: 'key' + i }, i, 20, cb);
+                    memory.set({ segment: 'seg2', id: 'clef' + i }, i, 20, cb);
+                    memory.set({ segment: 'seg3', id: 'schlüssel' + i }, i, 13, cb);
+                }
+                memory.set({ segment: 'seg1', id: 'nodelete2' }, '123', 500, cb);
+                memory.set({ segment: 'seg1', id: 'key20' }, '123', 20, cb);
+                memory.set({ segment: 'seg1', id: 'key21' }, '123', 20, cb);
+                memory.set({ segment: 'გასაღები', id: 'mykey' }, '123', 60, cb);
+
+                setTimeout(function () {
+
+                    expect(Object.keys(memory.cache.seg1).length).to.be.below(15);
+                    expect(Object.keys(memory.cache.seg1)).to.include('nodelete');
+                    expect(Object.keys(memory.cache.seg1)).to.include('nodelete2');
+                    expect(Object.keys(memory.cache.seg2).length).to.be.below(15);
+                    expect(Object.keys(memory.cache.seg3).length).to.be.below(15);
+                    expect(Object.keys(memory.cache['გასაღები']).length).to.equal(0);
+                    done();
+                }, 100);
+            });
+        });
+
     });
 });

@@ -312,6 +312,25 @@ describe('Memory', function () {
         });
     });
 
+    it('empty response when using non-existent key', function (done) {
+
+        var client = new Catbox.Client(Memory);
+        client.start(function (err) {
+
+            var key = { id: 'x', segment: 'test' };
+            client.set(key, 'x', 1, function (err) {
+
+                expect(err).to.not.exist();
+                client.get({ id: 'bla', segment: 'test' }, function (err, result) {
+
+                    expect(err).to.be.null();
+                    expect(result).to.be.null();
+                    done();
+                });
+            });
+        });
+    });
+
     it('ignores set when using non-positive ttl value', function (done) {
 
         var client = new Catbox.Client(Memory);

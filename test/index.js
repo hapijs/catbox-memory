@@ -1,5 +1,6 @@
 // Load modules
 
+var BigTime = require('big-time');
 var Code = require('code');
 var Lab = require('lab');
 var Catbox = require('catbox');
@@ -158,10 +159,10 @@ describe('Memory', function () {
                     client.set(key, '345', 500, function (err) {
 
                         expect(err).to.not.exist();
-                        client.get(key, function (err, result) {
+                        client.get(key, function (err, value) {
 
                             expect(err).to.equal(null);
-                            expect(result.item).to.equal('345');
+                            expect(value.item).to.equal('345');
                             done();
                         });
                     });
@@ -384,15 +385,15 @@ describe('Memory', function () {
         var cleared;
         var set;
 
-        var oldClear = clearTimeout;
-        clearTimeout = function (id) {
+        var oldClear = BigTime.clearTimeout;
+        BigTime.clearTimeout = function (id) {
 
             cleared = id;
             return oldClear(id);
         };
 
-        var oldSet = setTimeout;
-        setTimeout = function (fn, time) {
+        var oldSet = BigTime.setTimeout;
+        BigTime.setTimeout = function (fn, time) {
 
             set = oldSet(fn, time);
             return set;
@@ -405,8 +406,8 @@ describe('Memory', function () {
             client.set(key, '123', 500, function (err) {
 
                 client.stop();
-                clearTimeout = oldClear;
-                setTimeout = oldSet;
+                BigTime.clearTimeout = oldClear;
+                BigTime.setTimeout = oldSet;
                 expect(err).to.not.exist();
                 expect(cleared).to.exist();
                 expect(cleared).to.equal(set);

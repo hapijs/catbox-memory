@@ -158,10 +158,10 @@ describe('Memory', function () {
                     client.set(key, '345', 500, function (err) {
 
                         expect(err).to.not.exist();
-                        client.get(key, function (err, result) {
+                        client.get(key, function (err, data) {
 
                             expect(err).to.equal(null);
-                            expect(result.item).to.equal('345');
+                            expect(data.item).to.equal('345');
                             done();
                         });
                     });

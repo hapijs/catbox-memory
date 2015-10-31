@@ -1,29 +1,31 @@
+'use strict';
+
 // Load modules
 
-var Code = require('code');
-var Lab = require('lab');
-var Catbox = require('catbox');
-var Memory = require('..');
+const Code = require('code');
+const Lab = require('lab');
+const Catbox = require('catbox');
+const Memory = require('..');
 
 
 // Declare internals
 
-var internals = {};
+const internals = {};
 
 
 // Test shortcuts
 
-var lab = exports.lab = Lab.script();
-var describe = lab.describe;
-var it = lab.it;
-var expect = Code.expect;
+const lab = exports.lab = Lab.script();
+const describe = lab.describe;
+const it = lab.it;
+const expect = Code.expect;
 
 
-describe('Memory', function () {
+describe('Memory', () => {
 
-    it('throws an error if not created with new', function (done) {
+    it('throws an error if not created with new', (done) => {
 
-        var fn = function () {
+        const fn = () => {
 
             Memory();
         };
@@ -32,20 +34,22 @@ describe('Memory', function () {
         done();
     });
 
-    it('creates a new connection', function (done) {
+    it('creates a new connection', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
+
+        client.start((err) => {
 
             expect(client.isReady()).to.equal(true);
             done();
         });
     });
 
-    it('closes the connection', function (done) {
+    it('closes the connection', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
+
+        client.start((err) => {
 
             expect(client.isReady()).to.equal(true);
             client.stop();
@@ -54,16 +58,17 @@ describe('Memory', function () {
         });
     });
 
-    it('gets an item after setting it', function (done) {
+    it('gets an item after setting it', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
 
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, '123', 500, function (err) {
+        client.start((err) => {
+
+            const key = { id: 'x', segment: 'test' };
+            client.set(key, '123', 500, (err) => {
 
                 expect(err).to.not.exist();
-                client.get(key, function (err, result) {
+                client.get(key, (err, result) => {
 
                     expect(err).to.equal(null);
                     expect(result.item).to.equal('123');
@@ -73,19 +78,19 @@ describe('Memory', function () {
         });
     });
 
-    it('buffers can be set and retrieved when allowMixedContent is true', function (done) {
+    it('buffers can be set and retrieved when allowMixedContent is true', (done) => {
 
-        var buffer = new Buffer('string value');
-        var client = new Catbox.Client(new Memory({ allowMixedContent: true }));
+        const buffer = new Buffer('string value');
+        const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
 
-        client.start(function (err) {
+        client.start((err) => {
 
-            var key = { id: 'x', segment: 'test' };
+            const key = { id: 'x', segment: 'test' };
 
-            client.set(key, buffer, 500, function (err) {
+            client.set(key, buffer, 500, (err) => {
 
                 expect(err).to.not.exist();
-                client.get(key, function (err, result) {
+                client.get(key, (err, result) => {
 
                     expect(err).to.not.exist();
                     expect(result.item instanceof Buffer).to.equal(true);
@@ -96,19 +101,19 @@ describe('Memory', function () {
         });
     });
 
-    it('buffers are copied before storing when allowMixedContent is true', function (done) {
+    it('buffers are copied before storing when allowMixedContent is true', (done) => {
 
-        var buffer = new Buffer('string value');
-        var client = new Catbox.Client(new Memory({ allowMixedContent: true }));
+        const buffer = new Buffer('string value');
+        const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
 
-        client.start(function (err) {
+        client.start((err) => {
 
-            var key = { id: 'x', segment: 'test' };
+            const key = { id: 'x', segment: 'test' };
 
-            client.set(key, buffer, 500, function (err) {
+            client.set(key, buffer, 500, (err) => {
 
                 expect(err).to.not.exist();
-                client.get(key, function (err, result) {
+                client.get(key, (err, result) => {
 
                     expect(err).to.not.exist();
                     expect(result.item).to.not.equal(buffer);
@@ -118,19 +123,19 @@ describe('Memory', function () {
         });
     });
 
-    it('buffers are stringified when allowMixedContent is not true', function (done) {
+    it('buffers are stringified when allowMixedContent is not true', (done) => {
 
-        var buffer = new Buffer('string value');
-        var client = new Catbox.Client(new Memory());
+        const buffer = new Buffer('string value');
+        const client = new Catbox.Client(new Memory());
 
-        client.start(function (err) {
+        client.start((err) => {
 
-            var key = { id: 'x', segment: 'test' };
+            const key = { id: 'x', segment: 'test' };
 
-            client.set(key, buffer, 500, function (err) {
+            client.set(key, buffer, 500, (err) => {
 
                 expect(err).to.not.exist();
-                client.get(key, function (err, result) {
+                client.get(key, (err, result) => {
 
                     expect(err).to.not.exist();
                     expect(result.item instanceof Buffer).to.equal(false);
@@ -141,24 +146,26 @@ describe('Memory', function () {
         });
     });
 
-    it('gets an item after setting it (no memory limit)', function (done) {
+    it('gets an item after setting it (no memory limit)', (done) => {
 
-        var client = new Catbox.Client(new Memory({ maxByteSize: 0 }));
-        client.start(function (err) {
+        const client = new Catbox.Client(new Memory({ maxByteSize: 0 }));
 
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, '123', 500, function (err) {
+        client.start((err) => {
+
+            const key = { id: 'x', segment: 'test' };
+
+            client.set(key, '123', 500, (err) => {
 
                 expect(err).to.not.exist();
-                client.get(key, function (err, result) {
+                client.get(key, (err, result) => {
 
                     expect(err).to.equal(null);
                     expect(result.item).to.equal('123');
 
-                    client.set(key, '345', 500, function (err) {
+                    client.set(key, '345', 500, (err) => {
 
                         expect(err).to.not.exist();
-                        client.get(key, function (err, data) {
+                        client.get(key, (err, data) => {
 
                             expect(err).to.equal(null);
                             expect(data.item).to.equal('345');
@@ -170,15 +177,17 @@ describe('Memory', function () {
         });
     });
 
-    it('fails setting an item circular references', function (done) {
+    it('fails setting an item circular references', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
 
-            var key = { id: 'x', segment: 'test' };
-            var value = { a: 1 };
+        client.start((err) => {
+
+            const key = { id: 'x', segment: 'test' };
+            const value = { a: 1 };
+
             value.b = value;
-            client.set(key, value, 10, function (err) {
+            client.set(key, value, 10, (err) => {
 
                 expect(err.message).to.equal('Converting circular structure to JSON');
                 done();
@@ -186,13 +195,15 @@ describe('Memory', function () {
         });
     });
 
-    it('fails setting an item with very long ttl', function (done) {
+    it('fails setting an item with very long ttl', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
 
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, '123', Math.pow(2, 31), function (err) {
+        client.start((err) => {
+
+            const key = { id: 'x', segment: 'test' };
+
+            client.set(key, '123', Math.pow(2, 31), (err) => {
 
                 expect(err.message).to.equal('Invalid ttl (greater than 2147483647)');
                 done();
@@ -200,13 +211,13 @@ describe('Memory', function () {
         });
     });
 
-    it('ignored starting a connection twice on same event', function (done) {
+    it('ignored starting a connection twice on same event', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        var x = 2;
-        var start = function () {
+        const client = new Catbox.Client(Memory);
+        let x = 2;
+        const start = () => {
 
-            client.start(function (err) {
+            client.start((err) => {
 
                 expect(client.isReady()).to.equal(true);
                 --x;
@@ -220,15 +231,16 @@ describe('Memory', function () {
         start();
     });
 
-    it('ignored starting a connection twice chained', function (done) {
+    it('ignored starting a connection twice chained', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
+
+        client.start((err) => {
 
             expect(err).to.not.exist();
             expect(client.isReady()).to.equal(true);
 
-            client.start(function (err) {
+            client.start((err) => {
 
                 expect(err).to.not.exist();
                 expect(client.isReady()).to.equal(true);
@@ -237,12 +249,13 @@ describe('Memory', function () {
         });
     });
 
-    it('returns not found on get when using null key', function (done) {
+    it('returns not found on get when using null key', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
 
-            client.get(null, function (err, result) {
+        client.start((err) => {
+
+            client.get(null, (err, result) => {
 
                 expect(err).to.equal(null);
                 expect(result).to.equal(null);
@@ -251,18 +264,20 @@ describe('Memory', function () {
         });
     });
 
-    it('returns not found on get when item expired', function (done) {
+    it('returns not found on get when item expired', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
 
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, 'x', 1, function (err) {
+        client.start((err) => {
+
+            const key = { id: 'x', segment: 'test' };
+
+            client.set(key, 'x', 1, (err) => {
 
                 expect(err).to.not.exist();
-                setTimeout(function () {
+                setTimeout(() => {
 
-                    client.get(key, function (err, result) {
+                    client.get(key, (err, result) => {
 
                         expect(err).to.equal(null);
                         expect(result).to.equal(null);
@@ -273,25 +288,13 @@ describe('Memory', function () {
         });
     });
 
-    it('errors on set when using null key', function (done) {
+    it('errors on set when using null key', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
 
-            client.set(null, {}, 1000, function (err) {
+        client.start((err) => {
 
-                expect(err instanceof Error).to.equal(true);
-                done();
-            });
-        });
-    });
-
-    it('errors on get when using invalid key', function (done) {
-
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
-
-            client.get({}, function (err) {
+            client.set(null, {}, 1000, (err) => {
 
                 expect(err instanceof Error).to.equal(true);
                 done();
@@ -299,12 +302,13 @@ describe('Memory', function () {
         });
     });
 
-    it('errors on set when using invalid key', function (done) {
+    it('errors on get when using invalid key', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
 
-            client.set({}, {}, 1000, function (err) {
+        client.start((err) => {
+
+            client.get({}, (err) => {
 
                 expect(err instanceof Error).to.equal(true);
                 done();
@@ -312,13 +316,29 @@ describe('Memory', function () {
         });
     });
 
-    it('ignores set when using non-positive ttl value', function (done) {
+    it('errors on set when using invalid key', (done) => {
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
 
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, 'y', 0, function (err) {
+        client.start((err) => {
+
+            client.set({}, {}, 1000, (err) => {
+
+                expect(err instanceof Error).to.equal(true);
+                done();
+            });
+        });
+    });
+
+    it('ignores set when using non-positive ttl value', (done) => {
+
+        const client = new Catbox.Client(Memory);
+
+        client.start((err) => {
+
+            const key = { id: 'x', segment: 'test' };
+
+            client.set(key, 'y', 0, (err) => {
 
                 expect(err).to.not.exist();
                 done();
@@ -326,12 +346,13 @@ describe('Memory', function () {
         });
     });
 
-    it('errors on get when stopped', function (done) {
+    it('errors on get when stopped', (done) => {
 
-        var client = new Catbox.Client(Memory);
+        const client = new Catbox.Client(Memory);
         client.stop();
-        var key = { id: 'x', segment: 'test' };
-        client.connection.get(key, function (err, result) {
+        const key = { id: 'x', segment: 'test' };
+
+        client.connection.get(key, (err, result) => {
 
             expect(err).to.exist();
             expect(result).to.not.exist();
@@ -339,70 +360,70 @@ describe('Memory', function () {
         });
     });
 
-    it('errors on set when stopped', function (done) {
+    it('errors on set when stopped', (done) => {
 
-        var client = new Catbox.Client(Memory);
+        const client = new Catbox.Client(Memory);
         client.stop();
-        var key = { id: 'x', segment: 'test' };
-        client.connection.set(key, 'y', 1, function (err) {
+        const key = { id: 'x', segment: 'test' };
+        client.connection.set(key, 'y', 1, (err) => {
 
             expect(err).to.exist();
             done();
         });
     });
 
-    it('errors on missing segment name', function (done) {
+    it('errors on missing segment name', (done) => {
 
-        var config = {
+        const config = {
             expiresIn: 50000
         };
-        var fn = function () {
+        const fn = () => {
 
-            var client = new Catbox.Client(Memory);
-            var cache = new Catbox.Policy(config, client, '');
+            const client = new Catbox.Client(Memory);
+            const cache = new Catbox.Policy(config, client, '');    // eslint-disable-line no-unused-vars
         };
         expect(fn).to.throw(Error);
         done();
     });
 
-    it('errors on bad segment name', function (done) {
+    it('errors on bad segment name', (done) => {
 
-        var config = {
+        const config = {
             expiresIn: 50000
         };
-        var fn = function () {
+        const fn = () => {
 
-            var client = new Catbox.Client(Memory);
-            var cache = new Catbox.Policy(config, client, 'a\u0000b');
+            const client = new Catbox.Client(Memory);
+            const cache = new Catbox.Policy(config, client, 'a\u0000b');    // eslint-disable-line no-unused-vars
         };
         expect(fn).to.throw(Error);
         done();
     });
 
-    it('cleans up timers when stopped', { parallel: false }, function (done) {
+    it('cleans up timers when stopped', { parallel: false }, (done) => {
 
-        var cleared;
-        var set;
+        let cleared;
+        let set;
 
-        var oldClear = clearTimeout;
+        const oldClear = clearTimeout;
         clearTimeout = function (id) {
 
             cleared = id;
             return oldClear(id);
         };
 
-        var oldSet = setTimeout;
+        const oldSet = setTimeout;
         setTimeout = function (fn, time) {
 
             set = oldSet(fn, time);
             return set;
         };
 
-        var client = new Catbox.Client(Memory);
-        client.start(function (err) {
+        const client = new Catbox.Client(Memory);
+        client.start((err) => {
 
-            var key = { id: 'x', segment: 'test' };
-            client.set(key, '123', 500, function (err) {
+            const key = { id: 'x', segment: 'test' };
+            client.set(key, '123', 500, (err) => {
 
                 client.stop();
                 clearTimeout = oldClear;
@@ -415,13 +436,13 @@ describe('Memory', function () {
         });
     });
 
-    describe('start()', function () {
+    describe('start()', () => {
 
-        it('creates an empty cache object', function (done) {
+        it('creates an empty cache object', (done) => {
 
-            var memory = new Memory();
+            const memory = new Memory();
             expect(memory.cache).to.not.exist();
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
                 done();
@@ -429,13 +450,13 @@ describe('Memory', function () {
         });
     });
 
-    describe('stop()', function () {
+    describe('stop()', () => {
 
-        it('sets the cache object to null', function (done) {
+        it('sets the cache object to null', (done) => {
 
-            var memory = new Memory();
+            const memory = new Memory();
             expect(memory.cache).to.not.exist();
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
                 memory.stop();
@@ -445,26 +466,26 @@ describe('Memory', function () {
         });
     });
 
-    describe('get()', function () {
+    describe('get()', () => {
 
-        it('errors on invalid json in cache', function (done) {
+        it('errors on invalid json in cache', (done) => {
 
-            var key = {
+            const key = {
                 segment: 'test',
                 id: 'test'
             };
 
-            var memory = new Memory();
+            const memory = new Memory();
             expect(memory.cache).to.not.exist();
 
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key, 'myvalue', 10, function () {
+                memory.set(key, 'myvalue', 10, () => {
 
                     expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
                     memory.cache[key.segment][key.id].item = '"myvalue';
-                    memory.get(key, function (err, result) {
+                    memory.get(key, (err, result) => {
 
                         expect(err.message).to.equal('Bad value content');
                         done();
@@ -473,20 +494,20 @@ describe('Memory', function () {
             });
         });
 
-        it('returns not found on missing segment', function (done) {
+        it('returns not found on missing segment', (done) => {
 
-            var key = {
+            const key = {
                 segment: 'test',
                 id: 'test'
             };
 
-            var memory = new Memory();
+            const memory = new Memory();
             expect(memory.cache).to.not.exist();
 
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.get(key, function (err, result) {
+                memory.get(key, (err, result) => {
 
                     expect(err).to.not.exist();
                     expect(result).to.not.exist();
@@ -496,22 +517,22 @@ describe('Memory', function () {
         });
     });
 
-    describe('set()', function () {
+    describe('set()', () => {
 
-        it('adds an item to the cache object', function (done) {
+        it('adds an item to the cache object', (done) => {
 
-            var key = {
+            const key = {
                 segment: 'test',
                 id: 'test'
             };
 
-            var memory = new Memory();
+            const memory = new Memory();
             expect(memory.cache).to.not.exist();
 
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key, 'myvalue', 10, function () {
+                memory.set(key, 'myvalue', 10, () => {
 
                     expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
                     done();
@@ -519,23 +540,23 @@ describe('Memory', function () {
             });
         });
 
-        it('removes an item from the cache object when it expires', function (done) {
+        it('removes an item from the cache object when it expires', (done) => {
 
-            var key = {
+            const key = {
                 segment: 'test',
                 id: 'test'
             };
 
-            var memory = new Memory();
+            const memory = new Memory();
             expect(memory.cache).to.not.exist();
 
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key, 'myvalue', 10, function () {
+                memory.set(key, 'myvalue', 10, () => {
 
                     expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
-                    setTimeout(function () {
+                    setTimeout(() => {
 
                         expect(memory.cache[key.segment][key.id]).to.not.exist();
                         done();
@@ -544,20 +565,20 @@ describe('Memory', function () {
             });
         });
 
-        it('errors when the maxByteSize has been reached', function (done) {
+        it('errors when the maxByteSize has been reached', (done) => {
 
-            var key = {
+            const key = {
                 segment: 'test',
                 id: 'test'
             };
 
-            var memory = new Memory({ maxByteSize: 4 });
+            const memory = new Memory({ maxByteSize: 4 });
             expect(memory.cache).to.not.exist();
 
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key, 'myvalue', 10, function (err) {
+                memory.set(key, 'myvalue', 10, (err) => {
 
                     expect(err).to.exist();
                     expect(err).to.be.instanceOf(Error);
@@ -566,32 +587,32 @@ describe('Memory', function () {
             });
         });
 
-        it('increments the byte size when an item is inserted and errors when the limit is reached', function (done) {
+        it('increments the byte size when an item is inserted and errors when the limit is reached', (done) => {
 
-            var key1 = {
+            const key1 = {
                 segment: 'test',
                 id: 'test'
             };
 
-            var key2 = {
+            const key2 = {
                 segment: 'test',
                 id: 'test2'
             };
 
             // maxByteSize is slightly larger than the first key so we are left with a small
             // amount of free space, but not enough for the second key to be created.
-            var memory = new Memory({ maxByteSize: 200 });
+            const memory = new Memory({ maxByteSize: 200 });
             expect(memory.cache).to.not.exist();
 
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key1, 'my', 10, function (err) {
+                memory.set(key1, 'my', 10, (err) => {
 
                     expect(err).to.not.exist();
                     expect(memory.cache[key1.segment][key1.id].item).to.equal('"my"');
 
-                    memory.set(key2, 'myvalue', 10, function (err) {
+                    memory.set(key2, 'myvalue', 10, (err) => {
 
                         expect(err).to.exist();
                         done();
@@ -600,13 +621,13 @@ describe('Memory', function () {
             });
         });
 
-        it('increments the byte size when an object is inserted', function (done) {
+        it('increments the byte size when an object is inserted', (done) => {
 
-            var key1 = {
+            const key1 = {
                 segment: 'test',
                 id: 'test'
             };
-            var itemToStore = {
+            const itemToStore = {
                 my: {
                     array: [1, 2, 3],
                     bool: true,
@@ -614,13 +635,13 @@ describe('Memory', function () {
                 }
             };
 
-            var memory = new Memory({ maxByteSize: 2000 });
+            const memory = new Memory({ maxByteSize: 2000 });
             expect(memory.cache).to.not.exist();
 
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key1, itemToStore, 10, function () {
+                memory.set(key1, itemToStore, 10, () => {
 
                     expect(memory.byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
@@ -630,13 +651,13 @@ describe('Memory', function () {
             });
         });
 
-        it('leaves the byte size unchanged when an object overrides existing key with same size', function (done) {
+        it('leaves the byte size unchanged when an object overrides existing key with same size', (done) => {
 
-            var key1 = {
+            const key1 = {
                 segment: 'test',
                 id: 'test'
             };
-            var itemToStore = {
+            const itemToStore = {
                 my: {
                     array: [1, 2, 3],
                     bool: true,
@@ -645,17 +666,17 @@ describe('Memory', function () {
                 }
             };
 
-            var memory = new Memory({ maxByteSize: 2000 });
+            const memory = new Memory({ maxByteSize: 2000 });
             expect(memory.cache).to.not.exist();
 
-            memory.start(function () {
+            memory.start(() => {
 
                 expect(memory.cache).to.exist();
-                memory.set(key1, itemToStore, 10, function () {
+                memory.set(key1, itemToStore, 10, () => {
 
                     expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                     expect(memory.cache[key1.segment][key1.id].item).to.exist();
-                    memory.set(key1, itemToStore, 10, function () {
+                    memory.set(key1, itemToStore, 10, () => {
 
                         expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
                         expect(memory.cache[key1.segment][key1.id].item).to.exist();
@@ -666,22 +687,22 @@ describe('Memory', function () {
         });
     });
 
-    describe('drop()', function () {
+    describe('drop()', () => {
 
-        it('drops an existing item', function (done) {
+        it('drops an existing item', (done) => {
 
-            var client = new Catbox.Client(Memory);
-            client.start(function (err) {
+            const client = new Catbox.Client(Memory);
+            client.start((err) => {
 
-                var key = { id: 'x', segment: 'test' };
-                client.set(key, '123', 500, function (err) {
+                const key = { id: 'x', segment: 'test' };
+                client.set(key, '123', 500, (err) => {
 
                     expect(err).to.not.exist();
-                    client.get(key, function (err, result) {
+                    client.get(key, (err, result) => {
 
                         expect(err).to.equal(null);
                         expect(result.item).to.equal('123');
-                        client.drop(key, function (err) {
+                        client.drop(key, (err) => {
 
                             expect(err).to.not.exist();
                             done();
@@ -691,13 +712,13 @@ describe('Memory', function () {
             });
         });
 
-        it('drops an item from a missing segment', function (done) {
+        it('drops an item from a missing segment', (done) => {
 
-            var client = new Catbox.Client(Memory);
-            client.start(function (err) {
+            const client = new Catbox.Client(Memory);
+            client.start((err) => {
 
-                var key = { id: 'x', segment: 'test' };
-                client.drop(key, function (err) {
+                const key = { id: 'x', segment: 'test' };
+                client.drop(key, (err) => {
 
                     expect(err).to.not.exist();
                     done();
@@ -705,20 +726,20 @@ describe('Memory', function () {
             });
         });
 
-        it('drops a missing item', function (done) {
+        it('drops a missing item', (done) => {
 
-            var client = new Catbox.Client(Memory);
-            client.start(function (err) {
+            const client = new Catbox.Client(Memory);
+            client.start((err) => {
 
-                var key = { id: 'x', segment: 'test' };
-                client.set(key, '123', 500, function (err) {
+                const key = { id: 'x', segment: 'test' };
+                client.set(key, '123', 500, (err) => {
 
                     expect(err).to.not.exist();
-                    client.get(key, function (err, result) {
+                    client.get(key, (err, result) => {
 
                         expect(err).to.equal(null);
                         expect(result.item).to.equal('123');
-                        client.drop({ id: 'y', segment: 'test' }, function (err) {
+                        client.drop({ id: 'y', segment: 'test' }, (err) => {
 
                             expect(err).to.not.exist();
                             done();
@@ -728,25 +749,12 @@ describe('Memory', function () {
             });
         });
 
-        it('errors on drop when using invalid key', function (done) {
+        it('errors on drop when using invalid key', (done) => {
 
-            var client = new Catbox.Client(Memory);
-            client.start(function (err) {
+            const client = new Catbox.Client(Memory);
+            client.start((err) => {
 
-                client.drop({}, function (err) {
-
-                    expect(err instanceof Error).to.equal(true);
-                    done();
-                });
-            });
-        });
-
-        it('errors on drop when using null key', function (done) {
-
-            var client = new Catbox.Client(Memory);
-            client.start(function (err) {
-
-                client.drop(null, function (err) {
+                client.drop({}, (err) => {
 
                     expect(err instanceof Error).to.equal(true);
                     done();
@@ -754,23 +762,36 @@ describe('Memory', function () {
             });
         });
 
-        it('errors on drop when stopped', function (done) {
+        it('errors on drop when using null key', (done) => {
 
-            var client = new Catbox.Client(Memory);
+            const client = new Catbox.Client(Memory);
+            client.start((err) => {
+
+                client.drop(null, (err) => {
+
+                    expect(err instanceof Error).to.equal(true);
+                    done();
+                });
+            });
+        });
+
+        it('errors on drop when stopped', (done) => {
+
+            const client = new Catbox.Client(Memory);
             client.stop();
-            var key = { id: 'x', segment: 'test' };
-            client.connection.drop(key, function (err) {
+            const key = { id: 'x', segment: 'test' };
+            client.connection.drop(key, (err) => {
 
                 expect(err).to.exist();
                 done();
             });
         });
 
-        it('errors when cache item dropped while stopped', function (done) {
+        it('errors when cache item dropped while stopped', (done) => {
 
-            var client = new Catbox.Client(Memory);
+            const client = new Catbox.Client(Memory);
             client.stop();
-            client.drop('a', function (err) {
+            client.drop('a', (err) => {
 
                 expect(err).to.exist();
                 done();
@@ -778,31 +799,31 @@ describe('Memory', function () {
         });
     });
 
-    describe('validateSegmentName()', function () {
+    describe('validateSegmentName()', () => {
 
-        it('errors when the name is empty', function (done) {
+        it('errors when the name is empty', (done) => {
 
-            var memory = new Memory();
-            var result = memory.validateSegmentName('');
+            const memory = new Memory();
+            const result = memory.validateSegmentName('');
 
             expect(result).to.be.instanceOf(Error);
             expect(result.message).to.equal('Empty string');
             done();
         });
 
-        it('errors when the name has a null character', function (done) {
+        it('errors when the name has a null character', (done) => {
 
-            var memory = new Memory();
-            var result = memory.validateSegmentName('\u0000test');
+            const memory = new Memory();
+            const result = memory.validateSegmentName('\u0000test');
 
             expect(result).to.be.instanceOf(Error);
             done();
         });
 
-        it('returns null when there are no errors', function (done) {
+        it('returns null when there are no errors', (done) => {
 
-            var memory = new Memory();
-            var result = memory.validateSegmentName('valid');
+            const memory = new Memory();
+            const result = memory.validateSegmentName('valid');
 
             expect(result).to.not.be.instanceOf(Error);
             expect(result).to.equal(null);

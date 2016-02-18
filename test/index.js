@@ -40,6 +40,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             expect(client.isReady()).to.equal(true);
             done();
         });
@@ -51,6 +52,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             expect(client.isReady()).to.equal(true);
             client.stop();
             expect(client.isReady()).to.equal(false);
@@ -64,6 +66,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             const key = { id: 'x', segment: 'test' };
             client.set(key, '123', 500, (err) => {
 
@@ -85,8 +88,8 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             const key = { id: 'x', segment: 'test' };
-
             client.set(key, buffer, 500, (err) => {
 
                 expect(err).to.not.exist();
@@ -108,8 +111,8 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             const key = { id: 'x', segment: 'test' };
-
             client.set(key, buffer, 500, (err) => {
 
                 expect(err).to.not.exist();
@@ -130,8 +133,8 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             const key = { id: 'x', segment: 'test' };
-
             client.set(key, buffer, 500, (err) => {
 
                 expect(err).to.not.exist();
@@ -152,8 +155,8 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             const key = { id: 'x', segment: 'test' };
-
             client.set(key, '123', 500, (err) => {
 
                 expect(err).to.not.exist();
@@ -183,6 +186,8 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
+
             const key = { id: 'x', segment: 'test' };
             const value = { a: 1 };
 
@@ -200,6 +205,8 @@ describe('Memory', () => {
         const client = new Catbox.Client(Memory);
 
         client.start((err) => {
+
+            expect(err).to.not.exist();
 
             const key = { id: 'x', segment: 'test' };
 
@@ -219,6 +226,7 @@ describe('Memory', () => {
 
             client.start((err) => {
 
+                expect(err).to.not.exist();
                 expect(client.isReady()).to.equal(true);
                 --x;
                 if (!x) {
@@ -255,6 +263,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             client.get(null, (err, result) => {
 
                 expect(err).to.equal(null);
@@ -270,6 +279,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             const key = { id: 'x', segment: 'test' };
 
             client.set(key, 'x', 1, (err) => {
@@ -294,6 +304,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             client.set(null, {}, 1000, (err) => {
 
                 expect(err instanceof Error).to.equal(true);
@@ -308,6 +319,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             client.get({}, (err) => {
 
                 expect(err instanceof Error).to.equal(true);
@@ -322,6 +334,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             client.set({}, {}, 1000, (err) => {
 
                 expect(err instanceof Error).to.equal(true);
@@ -336,6 +349,7 @@ describe('Memory', () => {
 
         client.start((err) => {
 
+            expect(err).to.not.exist();
             const key = { id: 'x', segment: 'test' };
 
             client.set(key, 'y', 0, (err) => {
@@ -422,6 +436,7 @@ describe('Memory', () => {
         const client = new Catbox.Client(Memory);
         client.start((err) => {
 
+            expect(err).to.not.exist();
             const key = { id: 'x', segment: 'test' };
             client.set(key, '123', 500, (err) => {
 
@@ -694,6 +709,7 @@ describe('Memory', () => {
             const client = new Catbox.Client(Memory);
             client.start((err) => {
 
+                expect(err).to.not.exist();
                 const key = { id: 'x', segment: 'test' };
                 client.set(key, '123', 500, (err) => {
 
@@ -717,6 +733,7 @@ describe('Memory', () => {
             const client = new Catbox.Client(Memory);
             client.start((err) => {
 
+                expect(err).to.not.exist();
                 const key = { id: 'x', segment: 'test' };
                 client.drop(key, (err) => {
 
@@ -731,6 +748,7 @@ describe('Memory', () => {
             const client = new Catbox.Client(Memory);
             client.start((err) => {
 
+                expect(err).to.not.exist();
                 const key = { id: 'x', segment: 'test' };
                 client.set(key, '123', 500, (err) => {
 
@@ -754,6 +772,7 @@ describe('Memory', () => {
             const client = new Catbox.Client(Memory);
             client.start((err) => {
 
+                expect(err).to.not.exist();
                 client.drop({}, (err) => {
 
                     expect(err instanceof Error).to.equal(true);
@@ -767,6 +786,7 @@ describe('Memory', () => {
             const client = new Catbox.Client(Memory);
             client.start((err) => {
 
+                expect(err).to.not.exist();
                 client.drop(null, (err) => {
 
                     expect(err instanceof Error).to.equal(true);

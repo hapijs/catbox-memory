@@ -18,3 +18,13 @@ Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.
   `Buffer` data can be stored alongside the stringified data. `Buffer`s are not 
   stringified, and are copied before storage to prevent the value from changing while
   in the cache. Defaults to `false`.
+  
+### What to Use catbox-memory for and When to Use It
+
+**catbox-memory** is a memory caching module for **catbox**.
+
+**catbox** is a multi-strategy key-value object store. It allows a developer to more easily manage server side caching and storage rules.
+
+However, **catbox** does not include an external memory cache. That's where **catbox-memory** comes in. **catbox-memory** can be used to cache objects to memory.
+
+**catbox-memory** can be particularly helpful if you're trying to increase the efficiency of a legacy API system. The module can be used to cache the results of several API/database calls to memory, reducing bandwidth and server load and increasing the speed of an application.

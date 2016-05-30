@@ -7,6 +7,8 @@ Lead Maintainer - [Colin Ihrig](https://github.com/cjihrig)
 
 Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.svg)](https://www.npmjs.org/package/catbox-memory) [![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
 
+
+
 ### Options
 
 - `maxByteSize` - sets an upper limit on the number of bytes that can be stored in the
@@ -18,3 +20,5 @@ Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.
   `Buffer` data can be stored alongside the stringified data. `Buffer`s are not
   stringified, and are copied before storage to prevent the value from changing while
   in the cache. Defaults to `false`.
+
+Note: the maximum allowed value for `ttl` is `2^31-1`, which is around 24.8 days. If you need more than that use [big-time](https://www.npmjs.com/package/big-time).

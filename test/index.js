@@ -676,8 +676,7 @@ describe('Memory', () => {
                 my: {
                     array: [1, 2, 3],
                     bool: true,
-                    string: 'test',
-                    undefined: undefined
+                    string: 'test'
                 }
             };
 

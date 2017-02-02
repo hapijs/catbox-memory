@@ -2,6 +2,7 @@ catbox-memory
 =============
 
 Memory adapter for [catbox](https://github.com/hapijs/catbox).
+This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster mode).
 
 Lead Maintainer - [Wyatt Preul](https://github.com/geek)
 

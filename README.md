@@ -19,5 +19,3 @@ Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.
   `Buffer` data can be stored alongside the stringified data. `Buffer`s are not
   stringified, and are copied before storage to prevent the value from changing while
   in the cache. Defaults to `false`.
-
-Note: the maximum allowed value for `ttl` is `2^31-1`, which is around 24.8 days.

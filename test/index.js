@@ -231,37 +231,6 @@ describe('Memory', () => {
         expect(fn).to.throw(Error);
     });
 
-    it('cleans up timers when stopped', { parallel: false }, async () => {
-
-        let cleared;
-        let set;
-
-        const oldClear = clearTimeout;
-        clearTimeout = function (id) {
-
-            cleared = id;
-            return oldClear(id);
-        };
-
-        const oldSet = setTimeout;
-        setTimeout = function (fn, time) {
-
-            set = oldSet(fn, time);
-            return set;
-        };
-
-        const client = new Catbox.Client(Memory);
-        await client.start();
-        const key = { id: 'x', segment: 'test' };
-        await client.set(key, '123', 500);
-
-        client.stop();
-        clearTimeout = oldClear;
-        setTimeout = oldSet;
-        expect(cleared).to.exist();
-        expect(cleared).to.equal(set);
-    });
-
     describe('start()', () => {
 
         it('creates an empty cache object', async () => {
@@ -343,6 +312,32 @@ describe('Memory', () => {
             expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
         });
 
+        it('returns null when item does not exist', async () => {
+
+            const differentKeyInSameSegment = {
+                segment: 'test',
+                id: 'different'
+            };
+
+            const key = {
+                segment: 'test',
+                id: 'test'
+            };
+
+            const memory = new Memory();
+            expect(memory.cache).to.not.exist();
+
+            await memory.start();
+
+            expect(memory.cache).to.exist();
+
+            await memory.set(differentKeyInSameSegment, 'myvalue', 10);
+
+            const result = await memory.get(key);
+
+            expect(result).to.equal(null);
+        });
+
         it('removes an item from the cache object when it expires', async () => {
 
             const key = {
@@ -360,7 +355,8 @@ describe('Memory', () => {
 
             expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
             await Hoek.wait(15);
-            expect(memory.cache[key.segment][key.id]).to.not.exist();
+
+            await memory.get(key);
         });
 
         it('errors when the maxByteSize has been reached', async () => {

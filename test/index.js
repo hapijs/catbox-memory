@@ -22,7 +22,7 @@ const expect = Code.expect;
 
 describe('Memory', () => {
 
-    it('throws an error if not created with new', async () => {
+    it('throws an error if not created with new', () => {
 
         const fn = () => Memory();
         expect(fn).to.throw(Error);
@@ -185,23 +185,23 @@ describe('Memory', () => {
         await expect(client.set(key, 'y', 0)).to.not.reject();
     });
 
-    it('errors on get when stopped', async () => {
+    it('errors on get when stopped', () => {
 
         const client = new Catbox.Client(Memory);
         client.stop();
         const key = { id: 'x', segment: 'test' };
-        await expect(client.connection.get(key)).to.reject();
+        expect(() => client.connection.get(key)).to.throw();
     });
 
-    it('errors on set when stopped', async () => {
+    it('errors on set when stopped', () => {
 
         const client = new Catbox.Client(Memory);
         client.stop();
         const key = { id: 'x', segment: 'test' };
-        await expect(client.connection.set(key, 'y', 1)).to.reject();
+        expect(() => client.connection.set(key, 'y', 1)).to.throw();
     });
 
-    it('errors on missing segment name', async () => {
+    it('errors on missing segment name', () => {
 
         const config = {
             expiresIn: 50000
@@ -216,7 +216,7 @@ describe('Memory', () => {
         expect(fn).to.throw(Error);
     });
 
-    it('errors on bad segment name', async () => {
+    it('errors on bad segment name', () => {
 
         const config = {
             expiresIn: 50000
@@ -231,7 +231,7 @@ describe('Memory', () => {
         expect(fn).to.throw(Error);
     });
 
-    it('cleans up timers when stopped', { parallel: false }, async () => {
+    it('cleans up timers when stopped', async () => {
 
         let cleared;
         let set;
@@ -305,7 +305,7 @@ describe('Memory', () => {
 
             expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
             memory.cache[key.segment][key.id].item = '"myvalue';
-            await expect(memory.get(key)).to.reject('Bad value content');
+            expect(() => memory.get(key)).to.throw('Bad value content');
         });
 
         it('returns not found on missing segment', async () => {
@@ -376,7 +376,7 @@ describe('Memory', () => {
             await memory.start();
 
             expect(memory.cache).to.exist();
-            await expect(memory.set(key, 'myvalue', 10)).to.reject();
+            expect(() => memory.set(key, 'myvalue', 10)).to.throw();
         });
 
         it('increments the byte size when an item is inserted and errors when the limit is reached', async () => {
@@ -403,7 +403,7 @@ describe('Memory', () => {
 
             expect(memory.cache[key1.segment][key1.id].item).to.equal('"my"');
 
-            await expect(memory.set(key2, 'myvalue', 10)).to.reject();
+            expect(() => memory.set(key2, 'myvalue', 10)).to.throw();
         });
 
         it('increments the byte size when an object is inserted', async () => {
@@ -516,7 +516,7 @@ describe('Memory', () => {
             const client = new Catbox.Client(Memory);
             client.stop();
             const key = { id: 'x', segment: 'test' };
-            await expect(client.connection.drop(key)).to.reject();
+            await expect(() => client.connection.drop(key)).to.throw();
         });
 
         it('errors when cache item dropped while stopped', async () => {
@@ -529,30 +529,22 @@ describe('Memory', () => {
 
     describe('validateSegmentName()', () => {
 
-        it('errors when the name is empty', async () => {
+        it('errors when the name is empty', () => {
 
             const memory = new Memory();
-            const result = memory.validateSegmentName('');
-
-            expect(result).to.be.instanceOf(Error);
-            expect(result.message).to.equal('Empty string');
+            expect(() => memory.validateSegmentName('')).to.throw('Empty string');
         });
 
-        it('errors when the name has a null character', async () => {
+        it('errors when the name has a null character', () => {
 
             const memory = new Memory();
-            const result = memory.validateSegmentName('\u0000test');
-
-            expect(result).to.be.instanceOf(Error);
+            expect(() => memory.validateSegmentName('\u0000test')).to.throw();
         });
 
-        it('returns null when there are no errors', async () => {
+        it('returns null when there are no errors', () => {
 
             const memory = new Memory();
-            const result = memory.validateSegmentName('valid');
-
-            expect(result).to.not.be.instanceOf(Error);
-            expect(result).to.equal(null);
+            expect(() => memory.validateSegmentName('valid')).to.not.throw();
         });
     });
 });

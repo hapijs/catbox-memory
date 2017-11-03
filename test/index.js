@@ -118,16 +118,6 @@ describe('Memory', () => {
         await expect(client.set(key, value, 10)).to.reject('Converting circular structure to JSON');
     });
 
-    it('fails setting an item with very long ttl', async () => {
-
-        const client = new Catbox.Client(Memory);
-
-        await client.start();
-
-        const key = { id: 'x', segment: 'test' };
-        await expect(client.set(key, '123', Math.pow(2, 31))).to.reject('Invalid ttl (greater than 2147483647)');
-    });
-
     it('ignored starting a connection twice chained', async () => {
 
         const client = new Catbox.Client(Memory);
@@ -231,19 +221,26 @@ describe('Memory', () => {
         expect(fn).to.throw(Error);
     });
 
-    it('cleans up timers when stopped', async () => {
+    it('cleans up timers when stopped', async (flags) => {
+
+        const oldClear = clearTimeout;
+        const oldSet = setTimeout;
+
+        flags.onCleanup = () => {
+
+            clearTimeout = oldClear;
+            setTimeout = oldSet;
+        };
 
         let cleared;
         let set;
 
-        const oldClear = clearTimeout;
         clearTimeout = function (id) {
 
             cleared = id;
             return oldClear(id);
         };
 
-        const oldSet = setTimeout;
         setTimeout = function (fn, time) {
 
             set = oldSet(fn, time);
@@ -256,8 +253,6 @@ describe('Memory', () => {
         await client.set(key, '123', 500);
 
         client.stop();
-        clearTimeout = oldClear;
-        setTimeout = oldSet;
         expect(cleared).to.exist();
         expect(cleared).to.equal(set);
     });
@@ -303,8 +298,8 @@ describe('Memory', () => {
             expect(memory.cache).to.exist();
             await memory.set(key, 'myvalue', 10);
 
-            expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
-            memory.cache[key.segment][key.id].item = '"myvalue';
+            expect(memory.cache.get(key.segment).get(key.id).item).to.equal('"myvalue"');
+            memory.cache.get(key.segment).get(key.id).item = '"myvalue';
             expect(() => memory.get(key)).to.throw('Bad value content');
         });
 
@@ -340,7 +335,7 @@ describe('Memory', () => {
             await memory.start();
             expect(memory.cache).to.exist();
             await memory.set(key, 'myvalue', 10);
-            expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
+            expect(memory.cache.get(key.segment).get(key.id).item).to.equal('"myvalue"');
         });
 
         it('removes an item from the cache object when it expires', async () => {
@@ -358,9 +353,9 @@ describe('Memory', () => {
             expect(memory.cache).to.exist();
             await memory.set(key, 'myvalue', 10);
 
-            expect(memory.cache[key.segment][key.id].item).to.equal('"myvalue"');
+            expect(memory.cache.get(key.segment).get(key.id).item).to.equal('"myvalue"');
             await Hoek.wait(15);
-            expect(memory.cache[key.segment][key.id]).to.not.exist();
+            expect(memory.cache.get(key.segment).get(key.id)).to.not.exist();
         });
 
         it('errors when the maxByteSize has been reached', async () => {
@@ -401,7 +396,7 @@ describe('Memory', () => {
             expect(memory.cache).to.exist();
             await memory.set(key1, 'my', 10);
 
-            expect(memory.cache[key1.segment][key1.id].item).to.equal('"my"');
+            expect(memory.cache.get(key1.segment).get(key1.id).item).to.equal('"my"');
 
             expect(() => memory.set(key2, 'myvalue', 10)).to.throw();
         });
@@ -430,8 +425,8 @@ describe('Memory', () => {
             await memory.set(key1, itemToStore, 10);
 
             expect(memory.byteSize).to.equal(204);
-            expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
-            expect(memory.cache[key1.segment][key1.id].item).to.exist();
+            expect(memory.cache.get(key1.segment).get(key1.id).byteSize).to.equal(204);
+            expect(memory.cache.get(key1.segment).get(key1.id).item).to.exist();
         });
 
         it('leaves the byte size unchanged when an object overrides existing key with same size', async () => {
@@ -456,12 +451,12 @@ describe('Memory', () => {
             expect(memory.cache).to.exist();
             await memory.set(key1, itemToStore, 10);
 
-            expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
-            expect(memory.cache[key1.segment][key1.id].item).to.exist();
+            expect(memory.cache.get(key1.segment).get(key1.id).byteSize).to.equal(204);
+            expect(memory.cache.get(key1.segment).get(key1.id).item).to.exist();
             await memory.set(key1, itemToStore, 10);
 
-            expect(memory.cache[key1.segment][key1.id].byteSize).to.equal(204);
-            expect(memory.cache[key1.segment][key1.id].item).to.exist();
+            expect(memory.cache.get(key1.segment).get(key1.id).byteSize).to.equal(204);
+            expect(memory.cache.get(key1.segment).get(key1.id).item).to.exist();
         });
     });
 

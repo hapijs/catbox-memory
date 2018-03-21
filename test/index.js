@@ -56,7 +56,7 @@ describe('Memory', () => {
 
     it('buffers can be set and retrieved when allowMixedContent is true', async () => {
 
-        const buffer = new Buffer('string value');
+        const buffer = Buffer.from('string value');
         const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
 
         await client.start();
@@ -69,7 +69,7 @@ describe('Memory', () => {
 
     it('buffers are copied before storing when allowMixedContent is true', async () => {
 
-        const buffer = new Buffer('string value');
+        const buffer = Buffer.from('string value');
         const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
 
         await client.start();
@@ -81,7 +81,7 @@ describe('Memory', () => {
 
     it('buffers are stringified when allowMixedContent is not true', async () => {
 
-        const buffer = new Buffer('string value');
+        const buffer = Buffer.from('string value');
         const client = new Catbox.Client(new Memory());
 
         await client.start();

@@ -23,7 +23,7 @@
     "lab": "15.x.x"
   },
   "scripts": {
-    "test": "lab -a code -v -L -t 100",
+    "test": "lab -a code -L -t 100",
     "test-cov-html": "lab -a code -r html -o coverage.html"
   },
   "license": "BSD-3-Clause"

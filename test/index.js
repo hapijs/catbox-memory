@@ -40,7 +40,7 @@ describe('Memory', () => {
         const client = new Catbox.Client(Memory);
         await client.start();
         expect(client.isReady()).to.equal(true);
-        client.stop();
+        await client.stop();
         expect(client.isReady()).to.equal(false);
     });
 
@@ -175,18 +175,18 @@ describe('Memory', () => {
         await expect(client.set(key, 'y', 0)).to.not.reject();
     });
 
-    it('errors on get when stopped', () => {
+    it('errors on get when stopped', async () => {
 
         const client = new Catbox.Client(Memory);
-        client.stop();
+        await client.stop();
         const key = { id: 'x', segment: 'test' };
         expect(() => client.connection.get(key)).to.throw();
     });
 
-    it('errors on set when stopped', () => {
+    it('errors on set when stopped', async () => {
 
         const client = new Catbox.Client(Memory);
-        client.stop();
+        await client.stop();
         const key = { id: 'x', segment: 'test' };
         expect(() => client.connection.set(key, 'y', 1)).to.throw();
     });
@@ -221,42 +221,6 @@ describe('Memory', () => {
         expect(fn).to.throw(Error);
     });
 
-    it('cleans up timers when stopped', async (flags) => {
-
-        const oldClear = clearTimeout;
-        const oldSet = setTimeout;
-
-        flags.onCleanup = () => {
-
-            clearTimeout = oldClear;
-            setTimeout = oldSet;
-        };
-
-        let cleared;
-        let set;
-
-        clearTimeout = function (id) {
-
-            cleared = id;
-            return oldClear(id);
-        };
-
-        setTimeout = function (fn, time) {
-
-            set = oldSet(fn, time);
-            return set;
-        };
-
-        const client = new Catbox.Client(Memory);
-        await client.start();
-        const key = { id: 'x', segment: 'test' };
-        await client.set(key, '123', 500);
-
-        client.stop();
-        expect(cleared).to.exist();
-        expect(cleared).to.equal(set);
-    });
-
     describe('start()', () => {
 
         it('creates an empty cache object', async () => {
@@ -265,6 +229,7 @@ describe('Memory', () => {
             expect(memory.cache).to.not.exist();
             await memory.start();
             expect(memory.cache).to.exist();
+            await memory.stop();
         });
     });
 
@@ -278,10 +243,40 @@ describe('Memory', () => {
             expect(memory.cache).to.exist();
             memory.stop();
             expect(memory.cache).to.not.exist();
+            expect(memory._timer).to.not.exist();
         });
     });
 
     describe('get()', () => {
+
+        it('returns not found on missing item', async () => {
+
+            const memory = new Memory();
+            await memory.start();
+            await memory.set({ segment: 'test', id: 'test1' }, 'test', 1000);
+            const result = await memory.get({ segment: 'test', id: 'test2' });
+            expect(result).to.be.null();
+
+            await memory.stop();
+        });
+
+        it('returns not found on missing segment', async () => {
+
+            const key = {
+                segment: 'test',
+                id: 'test'
+            };
+
+            const memory = new Memory();
+            expect(memory.cache).to.not.exist();
+
+            await memory.start();
+            expect(memory.cache).to.exist();
+            const result = await memory.get(key);
+            expect(result).to.be.null();
+
+            await memory.stop();
+        });
 
         it('errors on invalid json in cache', async () => {
 
@@ -301,22 +296,8 @@ describe('Memory', () => {
             expect(memory.cache.get(key.segment).get(key.id).item).to.equal('"myvalue"');
             memory.cache.get(key.segment).get(key.id).item = '"myvalue';
             expect(() => memory.get(key)).to.throw('Bad value content');
-        });
 
-        it('returns not found on missing segment', async () => {
-
-            const key = {
-                segment: 'test',
-                id: 'test'
-            };
-
-            const memory = new Memory();
-            expect(memory.cache).to.not.exist();
-
-            await memory.start();
-            expect(memory.cache).to.exist();
-            const result = await memory.get(key);
-            expect(result).to.be.null();
+            await memory.stop();
         });
     });
 
@@ -336,16 +317,79 @@ describe('Memory', () => {
             expect(memory.cache).to.exist();
             await memory.set(key, 'myvalue', 10);
             expect(memory.cache.get(key.segment).get(key.id).item).to.equal('"myvalue"');
+
+            await memory.stop();
         });
 
-        it('removes an item from the cache object when it expires', async () => {
+        it('removes an item from the cache when it expires', async () => {
+
+            const key1 = {
+                segment: 'test',
+                id: 'test1'
+            };
+
+            const key2 = {
+                segment: 'test',
+                id: 'test2'
+            };
+
+            const memory = new Memory({ minCleanupIntervalMsec: 50 });
+            expect(memory.cache).to.not.exist();
+
+            await memory.start();
+
+            expect(memory.cache).to.exist();
+            await memory.set(key1, 'myvalue1', 10);
+            await memory.set(key2, 'myvalue2', 100);
+
+            expect(memory.cache.get(key1.segment).get(key1.id).item).to.equal('"myvalue1"');
+            expect(memory.get(key1).item).to.equal('myvalue1');
+            await Hoek.wait(60);
+            expect(memory.cache.get(key1.segment).get(key1.id)).to.not.exist();
+            expect(memory.cache.get(key2.segment).get(key2.id)).to.exist();
+
+            await memory.stop();
+        });
+
+        it('removes multiple items from the cache when they expire', async () => {
+
+            const key1 = {
+                segment: 'test',
+                id: 'test1'
+            };
+
+            const key2 = {
+                segment: 'test',
+                id: 'test2'
+            };
+
+            const memory = new Memory({ minCleanupIntervalMsec: 10 });
+            expect(memory.cache).to.not.exist();
+
+            await memory.start();
+
+            expect(memory.cache).to.exist();
+            await memory.set(key1, 'myvalue1', 15);
+            await memory.set(key2, 'myvalue2', 15);
+
+            expect(memory.get(key1).item).to.equal('myvalue1');
+            expect(memory.get(key2).item).to.equal('myvalue2');
+            await Hoek.wait(20);
+            expect(memory.cache.get(key1.segment).get(key1.id)).to.not.exist();
+            expect(memory.cache.get(key2.segment).get(key2.id)).to.not.exist();
+
+            expect(memory._timer).to.not.exist();
+            await memory.stop();
+        });
+
+        it('removes an item from the cache when it expires on get', async () => {
 
             const key = {
                 segment: 'test',
                 id: 'test'
             };
 
-            const memory = new Memory();
+            const memory = new Memory({ cleanupIntervalMsec: 50 });
             expect(memory.cache).to.not.exist();
 
             await memory.start();
@@ -354,8 +398,12 @@ describe('Memory', () => {
             await memory.set(key, 'myvalue', 10);
 
             expect(memory.cache.get(key.segment).get(key.id).item).to.equal('"myvalue"');
+            expect(memory.get(key).item).to.equal('myvalue');
             await Hoek.wait(15);
+            expect(memory.get(key)).to.not.exist();
             expect(memory.cache.get(key.segment).get(key.id)).to.not.exist();
+
+            await memory.stop();
         });
 
         it('errors when the maxByteSize has been reached', async () => {
@@ -372,6 +420,8 @@ describe('Memory', () => {
 
             expect(memory.cache).to.exist();
             expect(() => memory.set(key, 'myvalue', 10)).to.throw();
+
+            await memory.stop();
         });
 
         it('increments the byte size when an item is inserted and errors when the limit is reached', async () => {
@@ -399,6 +449,8 @@ describe('Memory', () => {
             expect(memory.cache.get(key1.segment).get(key1.id).item).to.equal('"my"');
 
             expect(() => memory.set(key2, 'myvalue', 10)).to.throw();
+
+            await memory.stop();
         });
 
         it('increments the byte size when an object is inserted', async () => {
@@ -427,6 +479,8 @@ describe('Memory', () => {
             expect(memory.byteSize).to.equal(204);
             expect(memory.cache.get(key1.segment).get(key1.id).byteSize).to.equal(204);
             expect(memory.cache.get(key1.segment).get(key1.id).item).to.exist();
+
+            await memory.stop();
         });
 
         it('leaves the byte size unchanged when an object overrides existing key with same size', async () => {
@@ -457,6 +511,8 @@ describe('Memory', () => {
 
             expect(memory.cache.get(key1.segment).get(key1.id).byteSize).to.equal(204);
             expect(memory.cache.get(key1.segment).get(key1.id).item).to.exist();
+
+            await memory.stop();
         });
     });
 
@@ -509,7 +565,7 @@ describe('Memory', () => {
         it('errors on drop when stopped', async () => {
 
             const client = new Catbox.Client(Memory);
-            client.stop();
+            await client.stop();
             const key = { id: 'x', segment: 'test' };
             await expect(() => client.connection.drop(key)).to.throw();
         });
@@ -517,7 +573,7 @@ describe('Memory', () => {
         it('errors when cache item dropped while stopped', async () => {
 
             const client = new Catbox.Client(Memory);
-            client.stop();
+            await client.stop();
             await expect(client.drop('a')).to.reject();
         });
     });

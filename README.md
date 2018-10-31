@@ -2,7 +2,8 @@ catbox-memory
 =============
 
 Memory adapter for [catbox](https://github.com/hapijs/catbox).
-This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster mode).
+This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster
+mode). It uses a single interval timeout to look for expired records and clean them from memory.
 
 Lead Maintainer - [Wyatt Preul](https://github.com/geek)
 
@@ -14,8 +15,15 @@ Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.
   cache. Once this limit is reached no additional items will be added to the cache
   until some expire. The utilized memory calculation is a rough approximation and must
   not be relied on. Defaults to `104857600` (100MB).
+- `minCleanupIntervalMsec` - the minimum number of milliseconds in between each cache cleanup.
+  Defaults to 1 second (`1000`);
 - `allowMixedContent` - by default, all data is cached as JSON strings, and converted
   to an object using `JSON.parse()` on retrieval. By setting this option to `true`,
   `Buffer` data can be stored alongside the stringified data. `Buffer`s are not
   stringified, and are copied before storage to prevent the value from changing while
   in the cache. Defaults to `false`.
+- `cloneBuffersOnGet` - by default, buffers stored in the cache with `allowMixedContent`
+  set to `true` are copied when they are set but not when they are retrieved. This means
+  a change to the buffer returned by a `get()` will change the value in the cache. To prevent
+  this, set `cloneBuffersOnGet` to  `true` to always return a copy of the cached buffer. Defaults
+  to `false`.

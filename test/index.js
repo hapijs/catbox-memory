@@ -75,8 +75,27 @@ describe('Memory', () => {
         await client.start();
         const key = { id: 'x', segment: 'test' };
         await client.set(key, buffer, 500);
-        const result = await client.get(key);
-        expect(result.item).to.not.shallow.equal(buffer);
+        const result1 = await client.get(key);
+        expect(result1.item).to.not.shallow.equal(buffer);
+
+        const result2 = await client.get(key);
+        expect(result2.item).to.shallow.equal(result1.item);
+    });
+
+    it('buffers are copied before returning when cloneBuffersOnGet is true', async () => {
+
+        const buffer = Buffer.from('string value');
+        const client = new Catbox.Client(new Memory({ allowMixedContent: true, cloneBuffersOnGet: true }));
+
+        await client.start();
+        const key = { id: 'x', segment: 'test' };
+        await client.set(key, buffer, 500);
+
+        const result1 = await client.get(key);
+        expect(result1.item).to.not.shallow.equal(buffer);
+
+        const result2 = await client.get(key);
+        expect(result2.item).to.not.shallow.equal(result1.item);
     });
 
     it('buffers are stringified when allowMixedContent is not true', async () => {

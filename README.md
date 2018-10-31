@@ -16,7 +16,7 @@ Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.
   until some expire. The utilized memory calculation is a rough approximation and must
   not be relied on. Defaults to `104857600` (100MB).
 - `minCleanupIntervalMsec` - the minimum number of milliseconds in between each cache cleanup.
-  Defaults to 1 second (`1000`);
+  Defaults to 1 second (`1000`).
 - `allowMixedContent` - by default, all data is cached as JSON strings, and converted
   to an object using `JSON.parse()` on retrieval. By setting this option to `true`,
   `Buffer` data can be stored alongside the stringified data. `Buffer`s are not

@@ -9,9 +9,6 @@
     "catbox",
     "memory"
   ],
-  "engines": {
-    "node": ">=8.12.0"
-  },
   "dependencies": {
     "big-time": "2.x.x",
     "boom": "7.x.x",

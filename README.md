@@ -5,7 +5,7 @@ Memory adapter for [catbox](https://github.com/hapijs/catbox).
 This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster
 mode). It uses a single interval timeout to look for expired records and clean them from memory.
 
-Lead Maintainer - [Wyatt Preul](https://github.com/geek)
+Lead Maintainer - [Eran Hammer](https://github.com/hueniverse)
 
 Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.svg)](https://www.npmjs.org/package/catbox-memory) [![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
 

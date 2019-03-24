@@ -1,19 +1,13 @@
 'use strict';
 
-// Load modules
-
+const Catbox = require('@commercial/catbox');
 const Code = require('code');
 const Lab = require('lab');
-const Catbox = require('catbox');
 const Memory = require('..');
 
 
-// Declare internals
-
 const internals = {};
 
-
-// Test shortcuts
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
@@ -83,7 +77,7 @@ describe('Memory', () => {
 
     it('buffers can be set and retrieved when allowMixedContent is true', (done) => {
 
-        const buffer = new Buffer('string value');
+        const buffer = Buffer.from('string value');
         const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
 
         client.start((err) => {
@@ -106,7 +100,7 @@ describe('Memory', () => {
 
     it('buffers are copied before storing when allowMixedContent is true', (done) => {
 
-        const buffer = new Buffer('string value');
+        const buffer = Buffer.from('string value');
         const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
 
         client.start((err) => {
@@ -128,7 +122,7 @@ describe('Memory', () => {
 
     it('buffers are stringified when allowMixedContent is not true', (done) => {
 
-        const buffer = new Buffer('string value');
+        const buffer = Buffer.from('string value');
         const client = new Catbox.Client(new Memory());
 
         client.start((err) => {

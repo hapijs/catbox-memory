@@ -1,11 +1,12 @@
-catbox-memory
-=============
+# catbox-memory
 
 Memory adapter for [catbox](https://github.com/hapijs/catbox).
 
-Lead Maintainer - [Wyatt Preul](https://github.com/geek)
+[![Build Status](https://travis-ci.org/hapijs/catbox-memory.svg?branch=v2-commercial)](https://travis-ci.org/hapijs/catbox-memory)
 
-Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.svg)](https://www.npmjs.org/package/catbox-memory) [![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
+## License
+
+This version of the package requires a commercial license. You may not use, copy, or distribute it without first acquiring a commercial license from Sideway Inc. Using this software without a license is a violation of US and international law. To obtain a license, please contact [sales@sideway.com](mailto:sales@sideway.com). The open source version of this package can be found [here](https://github.com/hapijs/catbox-memory).
 
 ### Options
 

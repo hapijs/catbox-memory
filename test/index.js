@@ -1,20 +1,14 @@
 'use strict';
 
-// Load modules
-
-const Catbox = require('catbox');
-const Code = require('code');
-const Hoek = require('hoek');
-const Lab = require('lab');
+const Catbox = require('@hapi/catbox');
+const Code = require('@hapi/code');
+const Hoek = require('@hapi/hoek');
+const Lab = require('@hapi/lab');
 const Memory = require('..');
 
 
-// Declare internals
-
 const internals = {};
 
-
-// Test shortcuts
 
 const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
@@ -54,10 +48,10 @@ describe('Memory', () => {
         expect(result.item).to.equal('123');
     });
 
-    it('buffers can be set and retrieved when allowMixedContent is true', async () => {
+    it('buffers can be set and retrieved', async () => {
 
         const buffer = Buffer.from('string value');
-        const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
+        const client = new Catbox.Client(new Memory());
 
         await client.start();
         const key = { id: 'x', segment: 'test' };
@@ -67,10 +61,10 @@ describe('Memory', () => {
         expect(result.item).to.equal(buffer);
     });
 
-    it('buffers are copied before storing when allowMixedContent is true', async () => {
+    it('buffers are copied before storing', async () => {
 
         const buffer = Buffer.from('string value');
-        const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
+        const client = new Catbox.Client(new Memory());
 
         await client.start();
         const key = { id: 'x', segment: 'test' };
@@ -85,7 +79,7 @@ describe('Memory', () => {
     it('buffers are copied before returning when cloneBuffersOnGet is true', async () => {
 
         const buffer = Buffer.from('string value');
-        const client = new Catbox.Client(new Memory({ allowMixedContent: true, cloneBuffersOnGet: true }));
+        const client = new Catbox.Client(new Memory({ cloneBuffersOnGet: true }));
 
         await client.start();
         const key = { id: 'x', segment: 'test' };
@@ -96,19 +90,6 @@ describe('Memory', () => {
 
         const result2 = await client.get(key);
         expect(result2.item).to.not.shallow.equal(result1.item);
-    });
-
-    it('buffers are stringified when allowMixedContent is not true', async () => {
-
-        const buffer = Buffer.from('string value');
-        const client = new Catbox.Client(new Memory());
-
-        await client.start();
-        const key = { id: 'x', segment: 'test' };
-        await client.set(key, buffer, 500);
-        const result = await client.get(key);
-        expect(result.item instanceof Buffer).to.equal(false);
-        expect(result.item).to.equal(JSON.parse(JSON.stringify(buffer)));
     });
 
     it('gets an item after setting it (no memory limit)', async () => {
@@ -382,18 +363,18 @@ describe('Memory', () => {
                 id: 'test2'
             };
 
-            const memory = new Memory({ minCleanupIntervalMsec: 50 });
+            const memory = new Memory({ minCleanupIntervalMsec: 100 });
             expect(memory.cache).to.not.exist();
 
             await memory.start();
 
             expect(memory.cache).to.exist();
-            await memory.set(key1, 'myvalue1', 55);
-            await memory.set(key2, 'myvalue2', 55);
+            await memory.set(key1, 'myvalue1', 110);
+            await memory.set(key2, 'myvalue2', 110);
 
             expect(memory.get(key1).item).to.equal('myvalue1');
             expect(memory.get(key2).item).to.equal('myvalue2');
-            await Hoek.wait(70);
+            await Hoek.wait(140);
             expect(memory.cache.get(key1.segment).get(key1.id)).to.not.exist();
             expect(memory.cache.get(key2.segment).get(key2.id)).to.not.exist();
 

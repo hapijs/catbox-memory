@@ -333,18 +333,18 @@ describe('Memory', () => {
                 id: 'test2'
             };
 
-            const memory = new Memory({ minCleanupIntervalMsec: 50 });
+            const memory = new Memory({ minCleanupIntervalMsec: 200 });
             expect(memory.cache).to.not.exist();
 
             await memory.start();
 
             expect(memory.cache).to.exist();
-            await memory.set(key1, 'myvalue1', 20);
-            await memory.set(key2, 'myvalue2', 100);
+            await memory.set(key1, 'myvalue1', 80);
+            await memory.set(key2, 'myvalue2', 400);
 
             expect(memory.cache.get(key1.segment).get(key1.id).item).to.equal('"myvalue1"');
             expect(memory.get(key1).item).to.equal('myvalue1');
-            await Hoek.wait(60);
+            await Hoek.wait(240);
             expect(memory.cache.get(key1.segment).get(key1.id)).to.not.exist();
             expect(memory.cache.get(key2.segment).get(key2.id)).to.exist();
 

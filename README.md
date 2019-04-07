@@ -1,10 +1,10 @@
+<a href="http://hapijs.com"><img src="https://github.com/hapijs/assets/blob/master/images/family.svg" width="180px" align="right" /></a>
+
 # catbox-memory
 
 Memory adapter for [catbox](https://github.com/hapijs/catbox).
 This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster
 mode). It uses a single interval timeout to look for expired records and clean them from memory.
-
-Lead Maintainer - [Eran Hammer](https://github.com/hueniverse)
 
 [![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
 

@@ -1,12 +1,9 @@
-catbox-memory
-=============
+# catbox-memory
 
 Memory adapter for [catbox](https://github.com/hapijs/catbox).
 This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster mode).
 
-Lead Maintainer - [Wyatt Preul](https://github.com/geek)
-
-Current version: [![Current Version](https://img.shields.io/npm/v/catbox-memory.svg)](https://www.npmjs.org/package/catbox-memory) [![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
+[![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg?branch=v3)](https://travis-ci.org/hapijs/catbox-memory)
 
 ### Options
 

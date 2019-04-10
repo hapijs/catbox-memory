@@ -1,20 +1,14 @@
 'use strict';
 
-// Load modules
-
-const Catbox = require('catbox');
-const Code = require('code');
-const Hoek = require('hoek');
-const Lab = require('lab');
+const Catbox = require('@hapi/catbox');
+const Code = require('@hapi/code');
+const Hoek = require('@hapi/hoek');
+const Lab = require('@hapi/lab');
 const Memory = require('..');
 
 
-// Declare internals
-
 const internals = {};
 
-
-// Test shortcuts
 
 const { describe, it } = exports.lab = Lab.script();
 const expect = Code.expect;
@@ -65,18 +59,33 @@ describe('Memory', () => {
         const result = await client.get(key);
         expect(result.item instanceof Buffer).to.equal(true);
         expect(result.item).to.equal(buffer);
+        expect(result.item).to.not.shallow.equal(buffer);
     });
 
-    it('buffers are copied before storing when allowMixedContent is true', async () => {
+    it('buffers are converted to objects when allowMixedContent is false', async () => {
 
         const buffer = Buffer.from('string value');
-        const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
+        const client = new Catbox.Client(new Memory({ allowMixedContent: false }));
 
         await client.start();
         const key = { id: 'x', segment: 'test' };
         await client.set(key, buffer, 500);
         const result = await client.get(key);
-        expect(result.item).to.not.shallow.equal(buffer);
+        expect(result.item).to.equal({
+            type: 'Buffer',
+            data: [115, 116, 114, 105, 110, 103, 32, 118, 97, 108, 117, 101]
+        });
+    });
+
+    it('objects are cached when allowMixedContent is false', async () => {
+
+        const client = new Catbox.Client(new Memory({ allowMixedContent: true }));
+
+        await client.start();
+        const key = { id: 'x', segment: 'test' };
+        await client.set(key, { a: 1 }, 500);
+        const result = await client.get(key);
+        expect(result.item).to.equal({ a: 1 });
     });
 
     it('buffers are stringified when allowMixedContent is not true', async () => {

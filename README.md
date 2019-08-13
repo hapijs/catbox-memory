@@ -5,6 +5,10 @@ This adapter is not designed to share a common cache between multiple processes 
 
 [![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg?branch=v3)](https://travis-ci.org/hapijs/catbox-memory)
 
+## License
+
+This version of the package requires a commercial license. You may not use, copy, or distribute it without first acquiring a commercial license from Sideway Inc. Using this software without a license is a violation of US and international law. To obtain a license, please contact [sales@sideway.com](mailto:sales@sideway.com). The open source version of this package can be found [here](https://github.com/hapijs/catbox-memory).
+
 ### Options
 
 - `maxByteSize` - sets an upper limit on the number of bytes that can be stored in the

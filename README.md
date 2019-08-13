@@ -3,7 +3,7 @@
 Memory adapter for [catbox](https://github.com/hapijs/catbox).
 This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster mode).
 
-[![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg?branch=v3)](https://travis-ci.org/hapijs/catbox-memory)
+[![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg?branch=v3-commercial)](https://travis-ci.org/hapijs/catbox-memory)
 
 ## License
 

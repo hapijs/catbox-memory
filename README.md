@@ -6,7 +6,7 @@ Memory adapter for [catbox](https://github.com/hapijs/catbox).
 This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster
 mode). It uses a single interval timeout to look for expired records and clean them from memory.
 
-[![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
+[![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory) [![Greenkeeper badge](https://badges.greenkeeper.io/hapijs/catbox-memory.svg)](https://greenkeeper.io/)
 
 ### Options
 

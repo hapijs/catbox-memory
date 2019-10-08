@@ -1,9 +1,16 @@
-<a href="http://hapijs.com"><img src="https://raw.githubusercontent.com/hapijs/assets/master/images/family.png" width="180px" align="right" /></a>
+<a href="https://hapi.dev"><img src="https://raw.githubusercontent.com/hapijs/assets/master/images/family.png" width="180px" align="right" /></a>
 
 # @hapi/catbox-memory
 
-Memory adapter for [catbox](https://github.com/hapijs/catbox).
-This adapter is not designed to share a common cache between multiple processes (e.g. in a cluster
-mode). It uses a single interval timeout to look for expired records and clean them from memory.
+#### Memory adaptor for [catbox](https://github.com/hapijs/catbox).
 
-[![Build Status](https://api.travis-ci.org/hapijs/catbox-memory.svg)](https://travis-ci.org/hapijs/catbox-memory)
+**catbox-memory** is part of the **hapi** ecosystem and was designed to work seamlessly with the [hapi web framework](https://hapi.dev) and its other components (but works great on its own or with other frameworks). If you are using a different web framework and find this module useful, check out [hapi](https://hapi.dev) – they work even better together.
+
+### Visit the [hapi.dev](https://hapi.dev) Developer Portal for tutorials, documentation, and support
+
+## Useful resources
+
+- [Documentation and API](https://hapi.dev/family/catbox-memory/)
+- [Versions status](https://hapi.dev/resources/status/#catbox-memory) (builds, dependencies, node versions, licenses, eol)
+- [Project policies](https://hapi.dev/policies/)
+- [Free and commercial support options](https://hapi.dev/support/)

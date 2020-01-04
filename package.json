@@ -1,7 +1,7 @@
 {
   "name": "@hapi/catbox-memory",
   "description": "Memory adapter for catbox",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "repository": "git://github.com/hapijs/catbox-memory",
   "main": "lib/index.js",
   "files": [

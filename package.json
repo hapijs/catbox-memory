@@ -3,6 +3,9 @@
   "description": "Memory adapter for catbox",
   "version": "2.1.0",
   "repository": "git://github.com/hapijs/catbox-memory",
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "main": "lib/index.js",
   "keywords": [
     "cache",

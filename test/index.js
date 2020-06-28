@@ -188,7 +188,7 @@ describe('Memory', () => {
             value.b = value;
             client.set(key, value, 10, (err) => {
 
-                expect(err.message).to.equal('Converting circular structure to JSON');
+                expect(err.message).to.match(/Converting circular structure to JSON/);
                 done();
             });
         });

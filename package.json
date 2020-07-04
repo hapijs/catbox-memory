@@ -3,6 +3,9 @@
   "description": "Memory adapter for catbox",
   "version": "3.2.1",
   "repository": "git://github.com/hapijs/catbox-memory",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "main": "lib/index.js",
   "keywords": [
     "cache",
@@ -10,12 +13,12 @@
     "memory"
   ],
   "dependencies": {
-    "@hapi/boom": "7.x.x",
-    "@commercial/hoek": "6.x.x",
-    "big-time": "2.x.x"
+    "@commercial/boom": "^7.4.11",
+    "@commercial/hoek": "^8.5.1",
+    "big-time": "2.0.1"
   },
   "devDependencies": {
-    "@hapi/catbox": "10.x.x",
+    "@commercial/catbox": "10.x.x",
     "@hapi/code": "6.x.x",
     "@hapi/lab": "20.x.x"
   },

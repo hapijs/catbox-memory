@@ -1,6 +1,4 @@
-<a href="https://hapi.dev"><img src="https://raw.githubusercontent.com/hapijs/assets/master/images/family.png" width="180px" align="right" /></a>
-
-# @hapi/catbox-memory
+# @commercial/catbox-memory
 
 #### Memory adaptor for [catbox](https://github.com/hapijs/catbox).
 

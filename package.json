@@ -19,7 +19,7 @@
   "devDependencies": {
     "@hapi/catbox": "11.x.x",
     "@hapi/code": "8.x.x",
-    "@hapi/lab": "22.x.x"
+    "@hapi/lab": "24.x.x"
   },
   "scripts": {
     "test": "lab -a @hapi/code -L -t 100",

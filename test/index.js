@@ -22,6 +22,12 @@ describe('Memory', () => {
         expect(fn).to.throw(Error);
     });
 
+    it('is extendable', () => {
+
+        const fn = () => new (class extends Memory {})();
+        expect(fn).to.not.throw();
+    });
+
     it('creates a new connection', async () => {
 
         const client = new Catbox.Client(Memory);

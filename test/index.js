@@ -22,6 +22,12 @@ describe('Memory', () => {
         expect(fn).to.throw(Error);
     });
 
+    it('is extendable', () => {
+
+        const fn = () => new (class extends Memory {})();
+        expect(fn).to.not.throw();
+    });
+
     it('creates a new connection', async () => {
 
         const client = new Catbox.Client(Memory);
@@ -374,7 +380,7 @@ describe('Memory', () => {
 
             expect(memory.get(key1).item).to.equal('myvalue1');
             expect(memory.get(key2).item).to.equal('myvalue2');
-            await Hoek.wait(140);
+            await Hoek.wait(300);
             expect(memory.cache.get(key1.segment).get(key1.id)).to.not.exist();
             expect(memory.cache.get(key2.segment).get(key2.id)).to.not.exist();
 

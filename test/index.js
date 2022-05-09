@@ -4,7 +4,7 @@ const Catbox = require('@hapi/catbox');
 const Code = require('@hapi/code');
 const Hoek = require('@hapi/hoek');
 const Lab = require('@hapi/lab');
-const Memory = require('..');
+const { Engine: Memory } = require('..');
 
 
 const internals = {};

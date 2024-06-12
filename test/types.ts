@@ -24,6 +24,8 @@ const client3 = new Client<string>(CatboxMemory, catboxMemoryOptions);
 
 (async () => {
 
+    await Promise.all([client.start(), client2.start(), client3.start()]);
+
     const x = await client.get({
         id: 'x',
         segment: 's',
@@ -45,4 +47,6 @@ const client3 = new Client<string>(CatboxMemory, catboxMemoryOptions);
     });
 
     z?.item === 'z';
-})()
+
+    await Promise.all([client.stop(), client2.stop(), client3.stop()]);
+})();
